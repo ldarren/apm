@@ -1,0 +1,23 @@
+{
+	"mod":{
+		"qiqi": {
+			"log": ["ctx", "output", "meta"],
+			"call": ["req", "res", "opt"]
+		},
+		"util": {
+			"validate": ["ctx", "key", "spec", "output"],
+			"extract": ["array", "key", "output"]
+		},
+		"session": {
+			"signup": ["input"]
+		}
+	},
+	"spec": {
+		"session": [ "signup", "signin", "signout" ]
+	},
+	"routes": {
+		"/v1/signup": [],
+		"/v1/signin": [],
+		"/v1/signout": []
+	}
+}
