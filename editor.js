@@ -8,22 +8,48 @@
 const Vec = require('~/vec')
 
 let data = {}
-let r1
 let ox = 0
 let oy = 0
 let svg
 
-function onStart(ev){
-	const x = r1.getAttribute("x")
-	const y = r1.getAttribute("y")
-	ox = x - ev.x
-	oy = y - ev.y
+function startDrag(r, ex, ey){
+	if (!r) return 0
+	r.classList.add('sel')
+	const x = r.getAttribute("x")
+	const y = r.getAttribute("y")
+	ox = x - ex
+	oy = y - ey
+	r.addEventListener('mouseup', onEnd)
+	window.addEventListener('mousemove', onDrag)
+	return 1
+}
+
+function startClone(r, ex, ey){
+	if (!r) return 0
+	const x = r.getAttribute("x")
+	const y = r.getAttribute("y")
+	const r1 = new Vec().rect(x, y, 80, 50).color('#999', '#000').addTo(svg).ele
+	r1.classList.add('tool', 'draggable', 'sel')
+	r1.addEventListener('mousedown', onStart)
+	ox = x - ex
+	oy = y - ey
 	r1.addEventListener('mouseup', onEnd)
 	window.addEventListener('mousemove', onDrag)
+	return 1
+}
+
+function onStart(ev){
+	const r = ev.target
+	startDrag(r.closest('.draggable'), ev.x, ev.y) || startClone(r.closest('.clonable'), ev.x, ev.y)
 }
 function onEnd(ev){
-	r1.removeEventListener('mouseup', onEnd)
 	window.removeEventListener('mousemove', onDrag)
+	const sels = document.querySelectorAll('.sel')
+	sels.forEach(sel => {
+		sel.classList.remove('sel')
+		sel.removeEventListener('mouseup', onEnd)
+	})
+	const r = ev.target
 
 	const belows = document.elementsFromPoint(ev.clientX, ev.clientY)
 	const below = belows.find(el => el.classList.contains('droppable'))
@@ -34,12 +60,13 @@ function onEnd(ev){
 	const x = parseInt(droppable.getAttribute('x')) || 0
 	const y = parseInt(droppable.getAttribute('y')) || 0
 	const h = parseInt(droppable.getAttribute('height')) || 0
-	r1.setAttribute('x', x)
-	r1.setAttribute('y', y + h)
+	r.setAttribute('x', x)
+	r.setAttribute('y', y + h)
 }
 function onDrag(ev){
-	r1.setAttribute("x", ev.x + ox)
-	r1.setAttribute("y", ev.y + oy)
+	const r = document.querySelector('.sel')
+	r.setAttribute("x", ev.x + ox)
+	r.setAttribute("y", ev.y + oy)
 }
 function changeDimensions() {
 	let stroke = parseInt(r1.style.strokeWidth) || 0
@@ -51,6 +78,7 @@ function changeDimensions() {
 
 function drawTool(panel, name, i, list){
 	const rect = new Vec().rect(0, 60 * i, 80, 50).color('#999', '#000').addTo(panel).ele
+	rect.classList.add('tool', 'clonable')
 	rect.addEventListener('mousedown', onStart)
 	return panel
 }
@@ -61,8 +89,9 @@ function drawToolbar(board, mod){
 	keys.reduce(drawTool, board)
 }
 
-function drawBox(panel, name, i, list){
+function drawRoute(panel, name, i, list){
 	const rect = new Vec().rect(0, 60 * i, 80, 50).color('#a00', '#baa').addTo(panel).ele
+	rect.classList.add('route', 'draggable')
 	rect.addEventListener('mousedown', onStart)
 	return panel
 }
@@ -72,7 +101,9 @@ function drawRoutes(board, x, y, routes = {}){
 	const panel = new Vec().svg(x, y, 100, 10 + (60 * keys.length)).addTo(board).ele
 	new Vec().rect(0, 0, '100%', '100%').color('#999', '#000').addTo(panel)
 	const inner = new Vec().svg(10, 10, 80, (60 * keys.length) - 10).addTo(panel).ele
-	keys.reduce(drawBox, inner)
+	keys.reduce(drawRoute, inner)
+	panel.classList.add('draggable')
+	panel.addEventListener('mousedown', onStart)
 }
 
 return {
