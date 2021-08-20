@@ -6,6 +6,7 @@
 </svg>
  */
 const Vec = require('~/vec')
+const Route = require('~/route')
 
 let data = {}
 let ox = 0
@@ -62,8 +63,8 @@ function onEnd(ev){
 	const h = parseInt(droppable.getAttribute('height')) || 0
 	r.setAttribute('x', 0)
 	r.setAttribute('y', y + h)
-	droppable.setAttribute('height',y + h)
-	droppable.ownerSVGElement.setAttribute('height',y + h)
+	droppable.setAttribute('height', y + h + 50)
+	droppable.ownerSVGElement.setAttribute('height', y + h + 20 + 50)
 }
 function onDrag(ev){
 	const r = document.querySelector('.sel')
