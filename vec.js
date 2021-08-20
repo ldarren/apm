@@ -35,6 +35,24 @@ Vec.prototype = {
 		host.appendChild(this.ele)
 		return this
 	},
+	toTop(){
+		const r = this.ele
+		const host = r.ownerSVGElement
+		host.appendChild(r)
+		return this
+	},
+	cl(...args){
+		this.ele.classList.add(...args)
+		return this
+	},
 }
 
 return Vec
+
+function changeDimensions() {
+	let stroke = parseInt(r1.style.strokeWidth) || 0
+	stroke = (stroke + 1) % 5
+	r1.style.strokeWidth = stroke
+	const width = r1.getAttribute('width')
+	r1.setAttribute("width", (parseInt(width) || 0) + 10)
+}
