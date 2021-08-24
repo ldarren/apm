@@ -7,6 +7,7 @@
  */
 const Vec = require('~/vec')
 const Route = require('~/route')
+const panels = []
 
 let data = {}
 let ox = 0
@@ -85,20 +86,14 @@ function drawToolbar(board, mod){
 	keys.reduce(drawTool, board)
 }
 
-function drawRoute(panel, name, i, list){
-	const rect = new Vec().rect(0, 60 * i, 80, 50).color('#a00', '#baa').addTo(panel).cl('route', 'draggable').ele
-	rect.addEventListener('mousedown', onStart)
-	return panel
-}
-
 function drawRoutes(board, x, y, routes = {}){
 	const keys = Object.keys(routes)
-	if (!keys.length) return
-	const panel = new Vec().svg(x, y, 100, 10 + (60 * keys.length)).addTo(board).cl('draggable').ele
-	new Vec().rect(0, 0, '100%', '100%').color('#999', '#000').addTo(panel)
-	const inner = new Vec().svg(10, 10, 80, (60 * keys.length) - 10).addTo(panel).cl('droppable').ele
-	keys.reduce(drawRoute, inner)
-	panel.addEventListener('mousedown', onStart)
+
+	keys.forEach((key, i) => {
+		const panel = new Vec().svg(x + (i * 10), y + (i * 10)).addTo(board).cl('draggable').ele
+		panel.addEventListener('mousedown', onStart)
+		panels.push(new Route(panel, routes[key]))
+	})
 }
 
 return {

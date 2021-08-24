@@ -9,7 +9,7 @@ function Vec(...args){
 }
 
 Vec.prototype = {
-	svg(x, y, w, h){
+	svg(x = 0, y = 0, w = 0, h = 0){
 		const e = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
 		e.setAttribute('x', x)
 		e.setAttribute('y', y)
@@ -18,7 +18,7 @@ Vec.prototype = {
 		this.ele = e
 		return this
 	},
-	rect(x, y, w, h){
+	rect(x = 0, y = 0, w = 0, h = 0){
 		const e = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
 		e.setAttribute('x', x)
 		e.setAttribute('y', y)

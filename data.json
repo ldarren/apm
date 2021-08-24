@@ -16,8 +16,8 @@
 		"session": [ "signup", "signin", "signout" ]
 	},
 	"routes": {
-		"/v1/signup": [],
-		"/v1/signin": [],
-		"/v1/signout": []
+		"/v1/signup": [[], [], []],
+		"/v1/signin": [[], []],
+		"/v1/signout": [[]]
 	}
 }
