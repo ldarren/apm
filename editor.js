@@ -16,7 +16,7 @@ let svg
 
 function startDrag(r, ex, ey){
 	if (!r) return 0
-	new Vec(r).toTop()
+	Vec(r).toTop()
 	r.classList.add('sel')
 	const x = r.getAttribute("x")
 	const y = r.getAttribute("y")
@@ -31,7 +31,7 @@ function startClone(r, ex, ey){
 	if (!r) return 0
 	const x = r.getAttribute("x")
 	const y = r.getAttribute("y")
-	const r1 = new Vec().rect(x, y, 80, 50).color('#999', '#000').addTo(svg).cl('draggable').ele
+	const r1 = Vec(svg).draw('rect', {x, y, width:80, height:50}).style({fill:'#999', stroke:'#000'}).cl('draggable').ele
 	r1.addEventListener('mousedown', onStart)
 
 	return startDrag(r1, ex, ey)
@@ -74,7 +74,7 @@ function onDrag(ev){
 }
 
 function drawTool(panel, name, i, list){
-	const rect = new Vec().rect(0, 60 * i, 80, 50).color('#999', '#000').addTo(panel).ele
+	const rect = Vec(panel).draw('rect', {x:0, y:60 * i, width:80, height:50}).style({fill:'#999', stroke:'#000'}).ele
 	rect.classList.add('tool', 'clonable')
 	rect.addEventListener('mousedown', onStart)
 	return panel
@@ -88,18 +88,17 @@ function drawToolbar(board, mod){
 
 function drawRoutes(board, x, y, routes = {}){
 	const keys = Object.keys(routes)
-
 	keys.forEach((key, i) => {
-		const panel = new Vec().svg(x + (i * 10), y + (i * 10)).addTo(board).cl('draggable').ele
+		const panel = Vec(board).draw('svg', {x: x + (i * 10), y: y + (i * 10)}).cl('draggable').ele
 		panel.addEventListener('mousedown', onStart)
-		panels.push(new Route(panel, routes[key]))
+		panels.push(new Route(panel, key, routes[key]))
 	})
 }
 
 return {
 	load(container, d){
 		data = d || {}
-		svg = new Vec().svg(0, 0, '100%', '100%').addTo(container).ele
+		svg = Vec(container).draw('svg', {x:0, y:0, width:'100%', height:'100%'}).ele
 		this.reload(data)
 	},
 	reload(d){

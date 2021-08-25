@@ -1,38 +1,37 @@
 function Vec(...args){
-	switch(args.length){
-	case 0:
-		return this
-	case 1:
-		this.ele = args[0]
-		return this
+	if (!(this instanceof Vec)){
+		return new Vec(...args)
 	}
+	if(args.length) this.draw(...args)
+	return this
 }
 
 Vec.prototype = {
-	svg(x = 0, y = 0, w = 0, h = 0){
-		const e = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
-		e.setAttribute('x', x)
-		e.setAttribute('y', y)
-		e.setAttribute('width', w)
-		e.setAttribute('height', h)
-		this.ele = e
+	draw(type, attr){
+		let ele
+		if (type.charAt){
+			ele = document.createElementNS("http://www.w3.org/2000/svg", type)
+			Object.keys(attr).reduce((e, key) => {
+				e.setAttribute(key, attr[key])
+				return e
+			}, ele)
+		} else {
+			ele = type
+		}
+		if (this.ele){
+			const host = this.ele
+			host.appendChild(ele)
+		}
+		this.ele = ele
 		return this
 	},
-	rect(x = 0, y = 0, w = 0, h = 0){
-		const e = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
-		e.setAttribute('x', x)
-		e.setAttribute('y', y)
-		e.setAttribute('width', w)
-		e.setAttribute('height', h)
-		this.ele = e
-		return this
-	},
-	color(fill, stroke){
-		this.ele.setAttribute('style', `stroke:${stroke}; fill:${fill};`)
-		return this
-	},
-	addTo(host){
-		host.appendChild(this.ele)
+	style(css){
+		this.ele.setAttribute('style', 
+			Object.keys(css).reduce((acc, key) => {
+				acc += `${key}:${css[key]};`
+				return acc
+			}, '')
+		)
 		return this
 	},
 	toTop(){
@@ -45,6 +44,10 @@ Vec.prototype = {
 		this.ele.classList.add(...args)
 		return this
 	},
+	text(str){
+		this.ele.appendChild(document.createTextNode(str))
+		return this
+	}
 }
 
 return Vec
