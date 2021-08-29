@@ -8,21 +8,13 @@ function Vec(...args){
 
 Vec.prototype = {
 	draw(type, attr){
-		let ele
-		if (type.charAt){
-			ele = document.createElementNS("http://www.w3.org/2000/svg", type)
-			Object.keys(attr).reduce((e, key) => {
-				e.setAttribute(key, attr[key])
-				return e
-			}, ele)
-		} else {
-			ele = type
-		}
+		const ele = type.charAt ? document.createElementNS("http://www.w3.org/2000/svg", type) : type
 		if (this.ele){
 			const host = this.ele
 			host.appendChild(ele)
 		}
 		this.ele = ele
+		this.addAttr(attr)
 		return this
 	},
 	style(css){
@@ -34,20 +26,56 @@ Vec.prototype = {
 		)
 		return this
 	},
+	addAttr(attr = {}){
+		Object.keys(attr).reduce((e, key) => {
+			e.setAttribute(key, attr[key])
+			return e
+		}, this.ele)
+		return this
+	},
+	remAttr(...attr){
+		const e = this.ele
+		attr.forEach(key => e.removeAttribute(key))
+		return this
+	},
+	getAttr(...attr){
+		const e = this.ele
+		const out = this.out || []
+		const res = attr.map(key => e.getAttribute(key))
+		this.out = out.concat(res)
+
+		return this
+	},
+	remEvt(...args){
+		this.ele.removeEventListener(name, func)
+		return this
+	},
+	addCl(...args){
+		this.ele.classList.add(...args)
+		return this
+	},
+	remCl(...args){
+		this.ele.classList.remove(...args)
+		return this
+	},
+	addEvt(name, func){
+		this.ele.addEventListener(name, func)
+		return this
+	},
+	remEvt(...args){
+		this.ele.removeEventListener(name, func)
+		return this
+	},
+	text(str){
+		this.ele.appendChild(document.createTextNode(str))
+		return this
+	},
 	toTop(){
 		const r = this.ele
 		const host = r.ownerSVGElement
 		host.appendChild(r)
 		return this
 	},
-	cl(...args){
-		this.ele.classList.add(...args)
-		return this
-	},
-	text(str){
-		this.ele.appendChild(document.createTextNode(str))
-		return this
-	}
 }
 
 return Vec
