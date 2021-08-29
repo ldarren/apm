@@ -15,8 +15,9 @@ Route.prototype = {
 		const h = parseInt(host.getAttribute('height'))
 		host.setAttribute('width', 100)
 		host.setAttribute('height', y + h + 50)
-		host.ownerSVGElement.setAttribute('height', y + h + 40 + 50)
-		host.ownerSVGElement.setAttribute('width', 100)
+		const hhost = host.ownerSVGElement
+		hhost.setAttribute('height', y + h + 40 + 50)
+		hhost.setAttribute('width', 100)
 		return host
 	}
 }

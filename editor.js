@@ -9,12 +9,13 @@ const Vec = require('~/vec')
 const Route = require('~/route')
 const Toolbar = require('~/toolbar')
 
+let svg
 const panels = []
+let toolbar
 
 let data = {}
 let ox = 0
 let oy = 0
-let svg
 
 function startDrag(r, ex, ey){
 	if (!r) return 0
@@ -80,8 +81,12 @@ function drawToolbar2(board, mod){
 	keys.reduce(drawTool, board)
 }
 
-function drawToolbar(board, name, mod, {x = 0, y = 0} = {}){
-	const panel = Vec(board).draw('svg', {x, y}).addCl('draggable').addEvt('mousedown', onStart).ele
+function drawToolbar(board, name, mod, opt = {x: 0, y: 0, width: 100, height: 80}){
+	if (toolbar){
+		toolbar.addTools(mod)
+		return
+	}
+	const panel = Vec(board).draw('svg', opt).addCl('draggable').addEvt('mousedown', onStart).ele
 	toolbar = new Toolbar(panel, name, mod)
 }
 
@@ -101,7 +106,7 @@ return {
 	},
 	reload(d){
 		data = d || {}
-		drawToolbar(svg, 'Toolbar', data.mod, {x: 10, y: 10})
+		drawToolbar(svg, 'Toolbar', data.mod, {x: 10, y: 10, width: 100, height: 80})
 		drawRoutes(svg, data.routes, {x: 500, y: 50})
 	},
 	save(){
