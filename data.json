@@ -1,12 +1,13 @@
 {
 	"mod":{
 		"qiqi": {
-			"log": ["ctx", "output", "meta"],
+			"log": ["res", "output", "meta"],
 			"call": ["req", "res", "opt"]
 		},
 		"util": {
-			"validate": ["ctx", "key", "spec", "output"],
-			"extract": ["array", "key", "output"]
+			"validate": [["spec", "key"], ["req", "output"]],
+			"extract": ["array", "key", "output"],
+			"output": ["array", "key", "output"]
 		},
 		"session": {
 			"signup": ["input"]
@@ -16,8 +17,14 @@
 		"session": [ "signup", "signin", "signout" ]
 	},
 	"routes": {
-		"/v1/signup": [[], [], []],
-		"/v1/signin": [[], []],
-		"/v1/signout": [[]]
+		"/v1/signup": [
+			["qiqi.log", "_.res", "_.output", "_.meta"]
+		],
+		"/v1/signin": [
+			["qiqi.log", "_.res", "_.output", "_.meta"]
+		],
+		"/v1/signout": [
+			["qiqi.log", "_.res", "_.output", "_.meta"]
+		]
 	}
 }

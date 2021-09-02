@@ -1,3 +1,5 @@
+const passthrough = x => x
+
 function Vec(...args){
 	if (!(this instanceof Vec)){
 		return new Vec(...args)
@@ -38,13 +40,15 @@ Vec.prototype = {
 		attr.forEach(key => e.removeAttribute(key))
 		return this
 	},
-	getAttr(...attr){
-		const e = this.ele
-		const out = this.out || []
-		const res = attr.map(key => e.getAttribute(key))
-		this.out = out.concat(res)
+	attr(filter = passthrough){
+		return (...attr) => {
+			const e = this.ele
+			const out = this.out || []
+			const res = attr.map(key => e.getAttribute(key))
+			this.out = out.concat(res)
 
-		return this
+			return this
+		}
 	},
 	remEvt(...args){
 		this.ele.removeEventListener(name, func)
@@ -68,6 +72,10 @@ Vec.prototype = {
 	},
 	text(str){
 		this.ele.appendChild(document.createTextNode(str))
+		return this
+	},
+	host(){
+		this.ele = this.ele.ownerSVGElement
 		return this
 	},
 	toTop(){
