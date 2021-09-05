@@ -7,7 +7,7 @@ function Route(host, name, mws, opt){
 	Vec(host).addAttr({width: (o.border * 2) + o.width, height: (o.border * 2) + o.header}).
 	draw('rect', {x:0, y:0, width:'100%', height:'100%'}).style({fill:'#999', stroke:'#000'}).
 	host().draw('text', {x:o.border, y:o.header/2}).style({fill:'#999', stroke:'#000'}).text(name)
-	const inner = Vec(host).draw('svg', {x:o.border, y:o.header + o.border}).addCl('droppable').ele
+	const inner = Vec(host).draw('svg', {x:o.border, y:o.header + o.border}).addCl('inner').ele
 	mws.reduce(this.drawMW, inner)
 }
 
@@ -20,6 +20,8 @@ Route.prototype = {
 		hhost.setAttribute('height', y + h + 40 + 50)
 		hhost.setAttribute('width', 100)
 		return host
+	},
+	onDrop(mw){
 	}
 }
 

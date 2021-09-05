@@ -10,39 +10,50 @@ const Route = require('~/route')
 const Toolbar = require('~/toolbar')
 const dnd = require('~/dnd')
 
-let svg
-const panels = []
-let toolbar
+const TOOLBAR = 'tb'
+const ROUTE = 'r'
 
+let svg
 let data = {}
-let saved = {
+const saved = {
 	toolbar: {
 		x: 10,
 		y: 10
 	},
 }
+const mapped = {}
 
 function drawToolbar(board, name, mod, opt){
-	if (toolbar){
-		toolbar.addTools(mod)
+	if (mapped[TOOLBAR]){
+		mapped[TOOLBAR].addTools(mod)
 		return
 	}
-	const panel = Vec(board).draw('svg', opt).addCl('draggable').addEvt('mousedown', dnd.onStart).ele
-	toolbar = new Toolbar(panel, name, mod, {width: 100, height: 30, border: 10})
+	const id = TOOLBAR
+	const panel = Vec(board).draw('svg', opt).addAttr({id}).addCl('draggable', 'droppable').ele
+	mapped[id] = new Toolbar(panel, name, mod, {width: 100, height: 30, border: 10})
 }
 
 function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
 	const keys = Object.keys(routes)
+	let id
 	keys.forEach((key, i) => {
-		const panel = Vec(board).draw('svg', {x: x + (i * 10), y: y + (i * 10)}).addCl('draggable').addEvt('mousedown', dnd.onStart).ele
-		panels.push(new Route(panel, key, routes[key]))
+		id = ROUTE + '_' + i
+		const panel = Vec(board).draw('svg', {x: x + (i * 10), y: y + (i * 10), id}).addCl('draggable', 'droppable').ele
+		mapped[id] = new Route(panel, key, routes[key])
 	})
+}
+
+function onDrop(target, droppable){
+	if (!droppable) return
+	const panel = mapped[droppable.id]
+	panel.onDrop(target)
 }
 
 return {
 	load(container, d){
 		data = d || {}
-		svg = Vec(container).draw('svg', {x:0, y:0, width:'100%', height:'100%'}).ele
+		svg = Vec(container).draw('svg', {x:0, y:0, width:'100%', height:'100%'}).addEvt('mousedown', dnd.onStart).ele
+		dnd.onEnd(onDrop)
 		this.reload(data)
 	},
 	reload(d){

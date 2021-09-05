@@ -19,7 +19,7 @@ function Toolbar(host, name, mod = {}, opt = {}){
 	Vec(host).addAttr({width: (o.border * 2) + o.width, height: (o.border * 3) + o.header})
 	.draw('rect', {x:0, y:0, width:'100%', height:'100%'}).style({fill:'#999', stroke:'#000'}).
 	host().draw('text', {x:o.border, y:o.border + o.header/2}).style({fill:'#999', stroke:'#000'}).text(name)
-	this.inner = Vec(host).draw('svg', {x:o.border, y:o.header + (2 * o.border)}).addCl('droppable').ele
+	this.inner = Vec(host).draw('svg', {x:o.border, y:o.header + (2 * o.border)}).addCl('inner').ele
 
 	this.addTools(mod)
 }
@@ -37,6 +37,17 @@ Toolbar.prototype = {
 		hhost.setAttribute('width', (o.border * 2) + o.width)
 
 		keys.reduce(drawTool, this)
+	},
+	onDrop(target){
+		const inner = this.inner
+		inner.appendChild(target)
+
+		const y = parseInt(inner.getAttribute('y')) || 0
+		const h = parseInt(inner.getAttribute('height')) || 0
+		target.setAttribute('x', 0)
+		target.setAttribute('y', y + h)
+		inner.setAttribute('height', y + h + 50)
+		inner.ownerSVGElement.setAttribute('height', y + h + 20 + 50)
 	}
 }
 
