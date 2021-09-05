@@ -30,7 +30,7 @@ function drawToolbar(board, name, mod, opt){
 	}
 	const id = TOOLBAR
 	const panel = Vec(board).draw('svg', opt).addAttr({id}).addCl('draggable', 'droppable').ele
-	mapped[id] = new Toolbar(panel, name, mod, {width: 100, height: 30, border: 10})
+	mapped[id] = new Toolbar(panel, name, {width: 100, height: 30, border: 10}, mod)
 }
 
 function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
@@ -39,11 +39,12 @@ function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
 	keys.forEach((key, i) => {
 		id = ROUTE + '_' + i
 		const panel = Vec(board).draw('svg', {x: x + (i * 10), y: y + (i * 10), id}).addCl('draggable', 'droppable').ele
-		mapped[id] = new Route(panel, key, routes[key])
+		mapped[id] = new Route(panel, key, null, routes[key])
 	})
 }
 
 function destroy(target){
+	if (!target || target.classList.contains('droppable')) return
 	target.ownerSVGElement.removeChild(target)
 }
 
@@ -55,6 +56,7 @@ function onDrag(draggable, droppable){
 }
 
 function onDrop(draggable, droppable){
+	if (draggable === droppable) return
 	if (!droppable) return destroy(draggable)
 	const panel = mapped[droppable.id]
 	if (!panel) return destroy(draggable)

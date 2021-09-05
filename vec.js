@@ -90,6 +90,11 @@ Vec.prototype = {
 		this.ele = this.ele.ownerSVGElement
 		return this
 	},
+	rm(){
+		this.ele.ownerSVGElement.removeChild(this.ele)
+		this.ele = null
+		return this
+	},
 	pos(cl){
 		let e = this.ele
 		let x = 0
