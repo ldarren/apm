@@ -43,9 +43,21 @@ Vec.prototype = {
 	attr(filter = passthrough){
 		return (...attr) => {
 			const e = this.ele
-			const out = this.out || []
-			const res = attr.map(key => e.getAttribute(key))
-			this.out = out.concat(res)
+			const out = this.out || {}
+
+			if (attr.length){
+				attr.reduce((acc, key) => {
+					acc[key] = filter(e.getAttribute(key))
+					return acc
+				}, out)
+			}else{
+				const as = e.attributes
+				for (let i = 0, l = as.length, a; i < l; i++){
+					a = as[i]
+					out[a.name] = a.value
+				}
+			}
+			this.out = out
 
 			return this
 		}
@@ -76,6 +88,20 @@ Vec.prototype = {
 	},
 	host(){
 		this.ele = this.ele.ownerSVGElement
+		return this
+	},
+	pos(cl){
+		let e = this.ele
+		let x = 0
+		let y = 0
+
+		while(e){
+			x += parseInt(e.getAttribute('x'))
+			y += parseInt(e.getAttribute('y'))
+			e = e.ownerSVGElement
+			if (e.classList.contains(cl)) break
+		}
+		this.out = {x, y, ele: e}
 		return this
 	},
 	toTop(){

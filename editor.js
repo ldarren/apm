@@ -43,17 +43,29 @@ function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
 	})
 }
 
-function onDrop(target, droppable){
-	if (!droppable) return
+function destroy(target){
+	target.ownerSVGElement.removeChild(target)
+}
+
+function onDrag(draggable, droppable){
+	if (!droppable) return destroy(draggable)
 	const panel = mapped[droppable.id]
-	panel.onDrop(target)
+	if (!panel) return destroy(draggable)
+	return panel.onDrag(draggable)
+}
+
+function onDrop(draggable, droppable){
+	if (!droppable) return destroy(draggable)
+	const panel = mapped[droppable.id]
+	if (!panel) return destroy(draggable)
+	return panel.onDrop(draggable)
 }
 
 return {
 	load(container, d){
 		data = d || {}
-		svg = Vec(container).draw('svg', {x:0, y:0, width:'100%', height:'100%'}).addEvt('mousedown', dnd.onStart).ele
-		dnd.onEnd(onDrop)
+		svg = Vec(container).draw('svg', {x:0, y:0, width:'100%', height:'100%'}).addCl('root').addEvt('mousedown', dnd.onStart).ele
+		dnd.callbacks(onDrag, onDrop)
 		this.reload(data)
 	},
 	reload(d){

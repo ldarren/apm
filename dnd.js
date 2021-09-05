@@ -2,11 +2,14 @@ const Vec = require('~/vec')
 
 let ox = 0
 let oy = 0
-let callback = () => {}
+let dragCB = () => {}
+let dropCB = () => {}
 
 function startDrag(r, ex, ey){
 	if (!r) return 0
-	const [x, y] = Vec(r).toTop().addCl('sel').addEvt('mouseup', onEnd).attr(parseInt)('x', 'y').out
+	const item = dragCB(r.closest('.draggable'), r.closest('.droppable'))
+
+	const {x, y} = Vec(item).toTop().addCl('sel').addEvt('mouseup', onEnd).attr(parseInt)('x', 'y').out
 	ox = x - ex
 	oy = y - ey
 	window.addEventListener('mousemove', onDrag)
@@ -15,7 +18,7 @@ function startDrag(r, ex, ey){
 
 function startClone(r, ex, ey){
 	if (!r) return 0
-	const [x, y] = Vec(r).attr(parseInt)('x', 'y').out
+	const {x, y} = Vec(r).attr(parseInt)('x', 'y').out
 	const r1 = Vec(svg).draw('rect', {x, y, width:80, height:50}).style({fill:'#999', stroke:'#000'}).addCl('draggable').ele
 
 	return startDrag(r1, ex, ey)
@@ -37,7 +40,7 @@ function onEnd(ev){
 		if (droppable) break
 	}
 
-	callback(r.closest('.draggable'), droppable)
+	dropCB(r.closest('.draggable'), droppable)
 }
 
 function onDrag(ev){
@@ -51,8 +54,8 @@ return {
 		const r = ev.target
 		startDrag(r.closest('.draggable'), ev.x, ev.y) || startClone(r.closest('.clonable'), ev.x, ev.y)
 	},
-	// todo: register on drap and on drop callbacks, both need to redraw
-	onEnd(cb){
-		callback = cb
+	callbacks(startCB, endCB){
+		dragCB = startCB
+		dropCB = endCB
 	}
 }
