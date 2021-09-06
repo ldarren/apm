@@ -1,4 +1,4 @@
-inherit('~/Panel')
+inherit('~/panel')
 const Vec = require('~/vec')
 const MW = require('~/mw')
 
