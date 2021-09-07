@@ -69,9 +69,8 @@ Route.prototype = {
 		})
 		if (!yes) idx = mws.length
 
-		const name = target.textContent
-
-		drawMW(this, name, idx)
+		const text = target.getElementsByTagName('text')[0]
+		drawMW(this, text.textContent, idx)
 		target.ownerSVGElement.removeChild(target)
 		this.reflow()
 	},

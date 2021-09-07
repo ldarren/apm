@@ -30,7 +30,7 @@ function drawToolbar(board, name, mod, opt){
 	}
 	const id = TOOLBAR
 	const panel = Vec(board).draw('svg', opt).addAttr({id}).addCl('draggable', 'droppable').ele
-	mapped[id] = new Toolbar(panel, name, {width: 100, height: 30, border: 10}, mod)
+	mapped[id] = new Toolbar(panel, name, {width: 200, height: 30, border: 10}, mod)
 }
 
 function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
@@ -38,8 +38,8 @@ function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
 	let id
 	keys.forEach((key, i) => {
 		id = ROUTE + '_' + i
-		const panel = Vec(board).draw('svg', {x: x + (i * 10), y: y + (i * 10), id}).addCl('draggable', 'droppable').ele
-		mapped[id] = new Route(panel, key, null, routes[key])
+		const panel = Vec(board).draw('svg', {id, x: x + (i * 10), y: y + (i * 10)}).addCl('draggable', 'droppable').ele
+		mapped[id] = new Route(panel, key, {width: 200, height: 30}, routes[key])
 	})
 }
 
@@ -73,7 +73,7 @@ return {
 	reload(d){
 		data = d || {}
 		drawToolbar(svg, 'Toolbar', data.mod, saved.toolbar)
-		drawRoutes(svg, data.routes, {x: 500, y: 50})
+		drawRoutes(svg, data.routes, {x: 300, y: 50})
 	},
 	save(){
 		return data
