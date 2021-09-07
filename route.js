@@ -7,9 +7,12 @@ const DEF_OPT = {width: 100, height: 30, border: 10, header: 20}
 function drawMW(ctx, name, i){
 	const o = ctx.opt
 	const host = ctx.inner
+	const mws = ctx.mws
 
 	const mw  = new MW(host, name, {x: 0, y: (i * o.height), width: o.width, height: o.height})
-	ctx.mws.push(mw)
+	if (!i) mws.unshift(mw)
+	else if (i >= mws.length) mws.push(mw)
+	else mws.splice(i, 0, mw)
 
 	return ctx
 }
@@ -54,8 +57,21 @@ Route.prototype = {
 		return mw.ele
 	},
 	onDrop(target){
+		const mws = this.mws
+		const {y: ty} = Vec(target).attr(parseInt)('y').out
+		const {y: iy} = Vec(this.inner).pos('root').out
+		const oy = ty - iy
+		let idx = 0
+		const yes = mws.some((mw, i) => {
+			const {y} = Vec(mw.ele).attr(parseInt)('y').out
+			idx = i
+			return (oy - y) < 0
+		})
+		if (!yes) idx = mws.length
+
 		const name = target.textContent
-		drawMW(this, name, this.mws.length)
+
+		drawMW(this, name, idx)
 		target.ownerSVGElement.removeChild(target)
 		this.reflow()
 	},
