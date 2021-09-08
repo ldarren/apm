@@ -1,48 +1,118 @@
+const passthrough = x => x
+
 function Vec(...args){
-	switch(args.length){
-	case 0:
-		return this
-	case 1:
-		this.ele = args[0]
-		return this
+	if (!(this instanceof Vec)){
+		return new Vec(...args)
 	}
+	if(args.length) this.draw(...args)
+	return this
 }
 
 Vec.prototype = {
-	svg(x, y, w, h){
-		const e = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
-		e.setAttribute('x', x)
-		e.setAttribute('y', y)
-		e.setAttribute('width', w)
-		e.setAttribute('height', h)
-		this.ele = e
+	draw(type, attr){
+		const ele = type.charAt ? document.createElementNS("http://www.w3.org/2000/svg", type) : type
+		if (this.ele){
+			const host = this.ele
+			host.appendChild(ele)
+		}
+		this.ele = ele
+		this.addAttr(attr)
 		return this
 	},
-	rect(x, y, w, h){
-		const e = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
-		e.setAttribute('x', x)
-		e.setAttribute('y', y)
-		e.setAttribute('width', w)
-		e.setAttribute('height', h)
-		this.ele = e
+	style(css){
+		this.ele.setAttribute('style', 
+			Object.keys(css).reduce((acc, key) => {
+				acc += `${key}:${css[key]};`
+				return acc
+			}, '')
+		)
 		return this
 	},
-	color(fill, stroke){
-		this.ele.setAttribute('style', `stroke:${stroke}; fill:${fill};`)
+	addAttr(attr = {}){
+		Object.keys(attr).reduce((e, key) => {
+			e.setAttribute(key, attr[key])
+			return e
+		}, this.ele)
 		return this
 	},
-	addTo(host){
-		host.appendChild(this.ele)
+	remAttr(...attr){
+		const e = this.ele
+		attr.forEach(key => e.removeAttribute(key))
+		return this
+	},
+	attr(filter = passthrough){
+		return (...attr) => {
+			const e = this.ele
+			const out = this.out || {}
+
+			if (attr.length){
+				attr.reduce((acc, key) => {
+					acc[key] = filter(e.getAttribute(key))
+					return acc
+				}, out)
+			}else{
+				const as = e.attributes
+				for (let i = 0, l = as.length, a; i < l; i++){
+					a = as[i]
+					out[a.name] = a.value
+				}
+			}
+			this.out = out
+
+			return this
+		}
+	},
+	remEvt(...args){
+		this.ele.removeEventListener(name, func)
+		return this
+	},
+	addCl(...args){
+		this.ele.classList.add(...args)
+		return this
+	},
+	remCl(...args){
+		this.ele.classList.remove(...args)
+		return this
+	},
+	addEvt(name, func){
+		this.ele.addEventListener(name, func)
+		return this
+	},
+	remEvt(...args){
+		this.ele.removeEventListener(name, func)
+		return this
+	},
+	text(str){
+		this.ele.appendChild(document.createTextNode(str))
+		return this
+	},
+	host(){
+		this.ele = this.ele.ownerSVGElement
+		return this
+	},
+	rm(){
+		this.ele.ownerSVGElement.removeChild(this.ele)
+		this.ele = null
+		return this
+	},
+	pos(cl){
+		let e = this.ele
+		let x = 0
+		let y = 0
+
+		while(e){
+			x += parseInt(e.getAttribute('x'))
+			y += parseInt(e.getAttribute('y'))
+			e = e.ownerSVGElement
+			if (e.classList.contains(cl)) break
+		}
+		this.out = {x, y, ele: e}
 		return this
 	},
 	toTop(){
 		const r = this.ele
 		const host = r.ownerSVGElement
 		host.appendChild(r)
-		return this
-	},
-	cl(...args){
-		this.ele.classList.add(...args)
 		return this
 	},
 }
