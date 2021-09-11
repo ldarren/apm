@@ -1,13 +1,7 @@
-/**
-<svg width="100%" height="90%">
-    <rect id="rect1" x="10" y="10" width="80" height="50" style="stroke:#000; fill:#999;" draggable="true" />
-    <rect id="rect2" class="droppable" x="500" y="10" width="80" height="50" style="stroke:#000; fill:#2db7f5;" />
-	<use xlink:href="#rect1"/>
-</svg>
- */
 const Vec = require('~/vec')
 const Route = require('~/route')
 const Toolbar = require('~/toolbar')
+const Button = require('~/button')
 const dnd = require('~/dnd')
 
 const TOOLBAR = 'tb'
@@ -43,6 +37,9 @@ function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
 	})
 }
 
+function addRoute(){
+}
+
 function destroy(target){
 	if (!target || target.classList.contains('droppable')) return
 	target.ownerSVGElement.removeChild(target)
@@ -72,6 +69,8 @@ return {
 	},
 	reload(d){
 		data = d || {}
+		const btn = new Button(svg, 'New Route', {x: 100, y: 500, width: 150, height: 30})
+		btn.on('click', addRoute)
 		drawToolbar(svg, 'Toolbar', data.mod, saved.toolbar)
 		drawRoutes(svg, data.routes, {x: 300, y: 50})
 	},
