@@ -67,6 +67,9 @@ function addRoute(){
 	drawRoute(svg, name, {id: ROUTE + '_' + name, x: 100, y: 100}, [])
 }
 
+function addRoute(){
+}
+
 function destroy(target){
 	if (!target || target.classList.contains('droppable')) return
 	target.ownerSVGElement.removeChild(target)
