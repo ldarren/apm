@@ -38,6 +38,7 @@ function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
 }
 
 function addRoute(){
+	alert('hello')
 }
 
 function destroy(target){
@@ -70,7 +71,7 @@ return {
 	reload(d){
 		data = d || {}
 		const btn = new Button(svg, 'New Route', {x: 100, y: 500, width: 150, height: 30})
-		btn.on('click', addRoute)
+		btn.on('click', addRoute, this)
 		drawToolbar(svg, 'Toolbar', data.mod, saved.toolbar)
 		drawRoutes(svg, data.routes, {x: 300, y: 50})
 	},
