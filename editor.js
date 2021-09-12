@@ -34,6 +34,12 @@ const saved = {
 		width: 150,
 		height: 30
 	},
+	addRouteBtn: {
+		x: 400,
+		y: 10,
+		width: 150,
+		height: 30
+	},
 }
 const mapped = {}
 
@@ -41,13 +47,6 @@ function drawMod(board, name, mod, opt){
 	const id = MOD + '_' + name
 	const panel = Vec(board).draw('svg', opt).addAttr({id}).addCl('draggable', 'droppable').ele
 	mapped[id] = new Toolbar(panel, name, {width: 200, height: 30, border: 10}, mod)
-}
-
-function drawMods(board, mods, opts){
-	if (!mods) return
-	Object.keys(mods).forEach(key => {
-		drawMod(board, key, mods[key], opts[key] || MOD_OPT)
-	})
 }
 
 function drawRoute(board, name, {id, x = 0, y = 0} = {}, route = []){
@@ -58,17 +57,12 @@ function drawRoute(board, name, {id, x = 0, y = 0} = {}, route = []){
 function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
 	const keys = Object.keys(routes)
 	let id
-	keys.forEach((key, i) => drawRoute(board, key, {id: ROUTE + '_' + key, x: x + (i * 10), y: y + (i * 10)}, routes[key]))
+	keys.forEach((key, i) => drawRoute(board, key, {id: ROUTE + '_' + i, x: x + (i * 10), y: y + (i * 10)}, routes[key]))
 }
 
 function addRoute(){
 	const name = window.prompt('New route name', '/')
-	if (!name) return
 	drawRoute(svg, name, {id: ROUTE + '_' + name, x: 100, y: 100}, [])
-}
-
-function addRoute(){
-	alert('hello')
 }
 
 function destroy(target){
@@ -99,7 +93,7 @@ return {
 	},
 	reload(d){
 		data = d || {}
-		const btn = new Button(svg, 'New Route', {x: 100, y: 500, width: 150, height: 30})
+		const btn = new Button(svg, 'New Route', saved.addRouteBtn)
 		btn.on('click', addRoute, this)
 		drawToolbar(svg, 'Toolbar', data.mod, saved.toolbar)
 		drawRoutes(svg, data.routes, {x: 300, y: 50})
