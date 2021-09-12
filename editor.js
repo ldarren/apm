@@ -68,6 +68,7 @@ function addRoute(){
 }
 
 function addRoute(){
+	alert('hello')
 }
 
 function destroy(target){
@@ -96,11 +97,11 @@ return {
 		dnd.callbacks(onDrag, onDrop)
 		this.reload(data)
 	},
-	reload(data){
-		data = data || {}
-		const btn = new Button(svg, 'New Route', saved.addRouteBtn)
+	reload(d){
+		data = d || {}
+		const btn = new Button(svg, 'New Route', {x: 100, y: 500, width: 150, height: 30})
 		btn.on('click', addRoute, this)
-		drawMods(svg, data.mod, saved.mods)
+		drawToolbar(svg, 'Toolbar', data.mod, saved.toolbar)
 		drawRoutes(svg, data.routes, {x: 300, y: 50})
 	},
 	save(){
