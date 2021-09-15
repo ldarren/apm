@@ -91,8 +91,8 @@ return {
 		dnd.callbacks(onDrag, onDrop)
 		this.reload(data)
 	},
-	reload(d){
-		data = d || {}
+	reload(data){
+		data = data || {}
 		const btn = new Button(svg, 'New Route', saved.addRouteBtn)
 		btn.on('click', addRoute, this)
 		drawToolbar(svg, 'Toolbar', data.mod, saved.toolbar)
