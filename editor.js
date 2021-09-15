@@ -1,3 +1,4 @@
+const pObj = require('pico/obj')
 const Vec = require('~/vec')
 const Route = require('~/route')
 const Toolbar = require('~/toolbar')
@@ -8,7 +9,6 @@ const TOOLBAR = 'tb'
 const ROUTE = 'r'
 
 let svg
-let data = {}
 const saved = {
 	toolbar: {
 		x: 10,
@@ -70,20 +70,21 @@ function onDrop(draggable, droppable){
 }
 
 return {
-	load(container, d){
-		data = d || {}
+	load(container, data){
 		svg = Vec(container).draw('svg', {x:0, y:0, width:'100%', height:'100%'}).addCl('root').addEvt('mousedown', dnd.onStart).ele
 		dnd.callbacks(onDrag, onDrop)
 		this.reload(data)
 	},
-	reload(d){
-		data = d || {}
+	reload(data){
+		data = data || {}
 		const btn = new Button(svg, 'New Route', saved.addRouteBtn)
 		btn.on('click', addRoute, this)
 		drawToolbar(svg, 'Toolbar', data.mod, saved.toolbar)
 		drawRoutes(svg, data.routes, {x: 300, y: 50})
 	},
 	save(){
-		return data
+		return Object.keys(mapped).reduce((data, key) => {
+			return pObj.extend(data, mapped[key].save(), {mergeArr: 0})
+		}, {})
 	}
 }

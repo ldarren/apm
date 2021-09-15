@@ -7,6 +7,6 @@ pico.run({
 	const main = require('~/main')
 
 	return function(){
-		main(document.getElementsByTagName('body')[0])
+		main(document.getElementsByTagName('main')[0])
 	}
 })

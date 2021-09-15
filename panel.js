@@ -19,6 +19,13 @@ Panel.prototype = {
 	onDrop(target){
 		target.ownerSVGElement.removeChild(target)
 	},
+	save(){
+		return {
+			unknown: {
+				[this.name]: []
+			}
+		}
+	}
 }
 
 return Panel

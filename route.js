@@ -74,6 +74,16 @@ Route.prototype = {
 		target.ownerSVGElement.removeChild(target)
 		this.reflow()
 	},
+	save(){
+		return {
+			routes: {
+				[this.name]: this.mws.reduce((arr, mw, i) => {
+					arr.push(mw.save())
+					return arr
+				}, [])
+			}
+		}
+	}
 }
 
 return Route

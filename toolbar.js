@@ -44,6 +44,15 @@ Toolbar.prototype = {
 		const mw = new MW(root, found.name, {x, y, width: o.width, height: o.height})
 		return mw.ele
 	},
+	save(){
+		return {
+			mod: this.tools.reduce((obj, tool, i) => {
+				const arr = tool.save()
+				obj[arr[0]] = {}
+				return obj
+			}, {})
+		}
+	}
 }
 
 return Toolbar
