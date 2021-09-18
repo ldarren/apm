@@ -23,15 +23,7 @@ function Toolbar(host, name, opt = {}, mod = {}){
 Toolbar.prototype = {
 	addTools(mod){
 		const keys = Object.keys(mod)
-		const o = this.opt
-		const host = this.inner
-
-		host.setAttribute('width', o.width)
-		host.setAttribute('height', keys.length * o.height)
-		const hhost = host.ownerSVGElement
-		hhost.setAttribute('height', (o.border * 3) + o.header + (keys.length * o.height))
-		hhost.setAttribute('width', (o.border * 2) + o.width)
-
+		this.expand(keys.length)
 		keys.reduce(drawTool, this)
 	},
 	onDrag(target){
@@ -41,7 +33,7 @@ Toolbar.prototype = {
 		const {x, y, ele: root} = Vec(found.ele).pos('root').out
 		const o = Vec(found.ele).attr()('width', 'height').out
 
-		const mw = new MW(root, found.name, {x, y, width: o.width, height: o.height})
+		const mw = new MW(root, this.name + '.' + found.name, {x, y, width: o.width, height: o.height})
 		return mw.ele
 	},
 	save(){

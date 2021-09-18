@@ -29,15 +29,9 @@ function Route(host, name, opt, names){
 Route.prototype = {
 	reflow(){
 		const o = this.opt
-		const host = this.inner
 		const mws = this.mws
-		const len = this.mws.length
 
-		host.setAttribute('width', o.width)
-		host.setAttribute('height', len * o.height)
-		const hhost = host.ownerSVGElement
-		hhost.setAttribute('height', (o.border * 3) + o.header + (len * o.height))
-		hhost.setAttribute('width', (o.border * 2) + o.width)
+		this.expand(mws.length)
 
 		mws.forEach((mw, i) => {
 			Vec(mw.ele).addAttr({x: 0, y: o.height * i})

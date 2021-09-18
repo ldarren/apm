@@ -5,14 +5,28 @@ const Toolbar = require('~/toolbar')
 const Button = require('~/button')
 const dnd = require('~/dnd')
 
-const TOOLBAR = 'tb'
+const MOD = 'm'
 const ROUTE = 'r'
+const MOD_OPT = {x: 5, y: 5, state: 0}
 
 let svg
 const saved = {
-	toolbar: {
-		x: 10,
-		y: 10
+	mods: {
+		qiqi: {
+			x: 10,
+			y: 10,
+			state: 0
+		},
+		util: {
+			x: 20,
+			y: 20,
+			state: 0
+		},
+		session: {
+			x: 30,
+			y: 30,
+			state: 0
+		}
 	},
 	addRouteBtn: {
 		x: 400,
@@ -23,14 +37,17 @@ const saved = {
 }
 const mapped = {}
 
-function drawToolbar(board, name, mod, opt){
-	if (mapped[TOOLBAR]){
-		mapped[TOOLBAR].addTools(mod)
-		return
-	}
-	const id = TOOLBAR
+function drawMod(board, name, mod, opt){
+	const id = MOD + '_' + name
 	const panel = Vec(board).draw('svg', opt).addAttr({id}).addCl('draggable', 'droppable').ele
 	mapped[id] = new Toolbar(panel, name, {width: 200, height: 30, border: 10}, mod)
+}
+
+function drawMods(board, mods, opts){
+	if (!mods) return
+	Object.keys(mods).forEach(key => {
+		drawMod(board, key, mods[key], opts[key] || MOD_OPT)
+	})
 }
 
 function drawRoute(board, name, {id, x = 0, y = 0} = {}, route = []){
@@ -41,11 +58,12 @@ function drawRoute(board, name, {id, x = 0, y = 0} = {}, route = []){
 function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
 	const keys = Object.keys(routes)
 	let id
-	keys.forEach((key, i) => drawRoute(board, key, {id: ROUTE + '_' + i, x: x + (i * 10), y: y + (i * 10)}, routes[key]))
+	keys.forEach((key, i) => drawRoute(board, key, {id: ROUTE + '_' + key, x: x + (i * 10), y: y + (i * 10)}, routes[key]))
 }
 
 function addRoute(){
 	const name = window.prompt('New route name', '/')
+	if (!name) return
 	drawRoute(svg, name, {id: ROUTE + '_' + name, x: 100, y: 100}, [])
 }
 
@@ -79,7 +97,7 @@ return {
 		data = data || {}
 		const btn = new Button(svg, 'New Route', saved.addRouteBtn)
 		btn.on('click', addRoute, this)
-		drawToolbar(svg, 'Toolbar', data.mod, saved.toolbar)
+		drawMods(svg, data.mod, saved.mods)
 		drawRoutes(svg, data.routes, {x: 300, y: 50})
 	},
 	save(){
