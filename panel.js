@@ -13,12 +13,29 @@ function Panel(host, name, opt = {}){
 }
 
 Panel.prototype = {
+	expand(count){
+		const o = this.opt
+		const host = this.inner
+
+		host.setAttribute('width', o.width)
+		host.setAttribute('height', count * o.height)
+		const hhost = host.ownerSVGElement
+		hhost.setAttribute('height', (o.border * 3) + o.header + (count * o.height))
+		hhost.setAttribute('width', (o.border * 2) + o.width)
+	},
 	onDrag(target){
 		return target
 	},
 	onDrop(target){
 		target.ownerSVGElement.removeChild(target)
 	},
+	save(){
+		return {
+			unknown: {
+				[this.name]: []
+			}
+		}
+	}
 }
 
 return Panel

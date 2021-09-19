@@ -15,6 +15,9 @@ function MW(host, name, opt){
 }
 
 MW.prototype = {
+	save(){
+		return [this.name]
+	}
 }
 
 return MW

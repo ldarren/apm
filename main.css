@@ -1,0 +1,31 @@
+html{
+	font-size:62.5%;
+    font-family:monospace,sans-serif;
+	color:#fccdd3;
+}
+html,body{
+	height:100%;
+}
+*{
+	padding:0;
+	margin:0;
+}
+body{
+	display:flex;
+	flex-direction:column;
+}
+.truncate{
+	text-overflow: ellipsis;
+}
+nav{
+	min-height: 4rem;
+	display:flex;
+	flex-direction:row;
+	background:black;
+	color:#bbc4ef;
+}
+main{
+	flex: 1;
+	border-right:1px solid #bbc4ef;
+	background:#62bcfa;
+}
