@@ -4,12 +4,11 @@ const MW = require('~/mw')
 
 const DEF_OPT = {width: 100, height: 30, border: 10, header: 20}
 
-function draw(ctx, name, i){
+function draw(ctx, arr, i){
 	const o = ctx.opt
 	const host = ctx.inner
 	const mws = ctx.mws
-
-	const mw  = new MW(host, name, {x: 0, y: (i * o.height), width: o.width, height: o.height})
+	const mw  = new MW(host, arr[0], arr.slice(1), {x: 0, y: (i * o.height), width: o.width, height: o.height})
 	if (!i) mws.unshift(mw)
 	else if (i >= mws.length) mws.push(mw)
 	else mws.splice(i, 0, mw)
@@ -64,7 +63,7 @@ Route.prototype = {
 		if (!yes) idx = mws.length
 
 		const text = target.getElementsByTagName('text')[0]
-		draw(this, text.textContent, idx)
+		draw(this, [text.textContent], idx)
 		target.ownerSVGElement.removeChild(target)
 		this.reflow()
 	},

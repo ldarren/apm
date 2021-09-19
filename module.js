@@ -4,15 +4,6 @@ const MW = require('~/mw')
 
 const DEF_OPT = {width: 100, height: 30, border: 10, header: 20}
 
-function draw(ctx, name, i){
-	const host = ctx.inner
-	const o = ctx.opt
-	const mw = new MW(host, name, {x: 0, y: (i * o.height), width: o.width, height: o.height})
-	ctx.mods.push(mw)
-
-	return ctx
-}
-
 function Module(host, name, opt = {}, mods = {}){
 	const o = Object.assign({}, DEF_OPT, opt || {})
 	this.constructor.call(this, host, name, o)
@@ -24,7 +15,14 @@ Module.prototype = {
 	add(mods){
 		const keys = Object.keys(mods)
 		this.expand(keys.length)
-		keys.reduce(draw, this)
+		keys.reduce((ctx, name, i) => {
+			const host = ctx.inner
+			const o = ctx.opt
+			const mw = new MW(host, name, mods[name], {x: 0, y: (i * o.height), width: o.width, height: o.height})
+			ctx.mods.push(mw)
+
+			return ctx
+		}, this)
 	},
 	onDrag(target){
 		const found = this.mods.find(mw => mw.ele == target)

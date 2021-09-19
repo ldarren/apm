@@ -73,6 +73,7 @@ function drawRoute(board, name, {id, x = 0, y = 0} = {}, route = []){
 }
 
 function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
+console.log('##drawRoutes', routes)
 	const keys = Object.keys(routes)
 	let id
 	keys.forEach((key, i) => drawRoute(board, key, {id: ROUTE + '_' + key, x: x + (i * 10), y: y + (i * 10)}, routes[key]))
