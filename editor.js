@@ -1,10 +1,12 @@
 const pObj = require('pico/obj')
 const Vec = require('~/vec')
 const Route = require('~/route')
-const Toolbar = require('~/toolbar')
+const Module = require('~/module')
+const Spec = require('~/spec')
 const Button = require('~/button')
 const dnd = require('~/dnd')
 
+const SPEC = '@'
 const MOD = 'm'
 const ROUTE = 'r'
 const MOD_OPT = {x: 5, y: 5, state: 0}
@@ -28,6 +30,10 @@ const saved = {
 			state: 0
 		}
 	},
+	spec: {
+		x: 10,
+		y: 200
+	},
 	addRouteBtn: {
 		x: 400,
 		y: 10,
@@ -37,10 +43,21 @@ const saved = {
 }
 const mapped = {}
 
+function drawSpec(board, spec, opt = {}){
+	if (!spec) return
+	let global = mapped[SPEC]
+	if (global){
+		global.add(spec)
+	}else{
+		const panel = Vec(board).draw('svg', opt).addAttr({id: SPEC, x: opt.x, y: opt.y}).addCl('draggable', 'droppable').ele
+		mapped[SPEC] = new Spec(panel, 'Spec', {width: 200, height: 30, border: 10}, spec)
+	}
+}
+
 function drawMod(board, name, mod, opt){
 	const id = MOD + '_' + name
-	const panel = Vec(board).draw('svg', opt).addAttr({id}).addCl('draggable', 'droppable').ele
-	mapped[id] = new Toolbar(panel, name, {width: 200, height: 30, border: 10}, mod)
+	const panel = Vec(board).draw('svg', opt).addAttr({id, x: opt.x, y: opt.y}).addCl('draggable', 'droppable').ele
+	mapped[id] = new Module(panel, name, {width: 200, height: 30, border: 10}, mod)
 }
 
 function drawMods(board, mods, opts){
@@ -98,6 +115,7 @@ return {
 		const btn = new Button(svg, 'New Route', saved.addRouteBtn)
 		btn.on('click', addRoute, this)
 		drawMods(svg, data.mod, saved.mods)
+		drawSpec(svg, data.spec, saved.spec)
 		drawRoutes(svg, data.routes, {x: 300, y: 50})
 	},
 	save(){

@@ -4,30 +4,30 @@ const MW = require('~/mw')
 
 const DEF_OPT = {width: 100, height: 30, border: 10, header: 20}
 
-function drawTool(ctx, name, i){
+function draw(ctx, name, i){
 	const host = ctx.inner
 	const o = ctx.opt
-	const mw  = new MW(host, name, {x: 0, y: (i * o.height), width: o.width, height: o.height})
-	ctx.tools.push(mw)
+	const mw = new MW(host, name, {x: 0, y: (i * o.height), width: o.width, height: o.height})
+	ctx.mods.push(mw)
 
 	return ctx
 }
 
-function Toolbar(host, name, opt = {}, mod = {}){
+function Module(host, name, opt = {}, mods = {}){
 	const o = Object.assign({}, DEF_OPT, opt || {})
 	this.constructor.call(this, host, name, o)
-	this.tools = []
-	this.addTools(mod)
+	this.mods = []
+	this.add(mods)
 }
 
-Toolbar.prototype = {
-	addTools(mod){
-		const keys = Object.keys(mod)
+Module.prototype = {
+	add(mods){
+		const keys = Object.keys(mods)
 		this.expand(keys.length)
-		keys.reduce(drawTool, this)
+		keys.reduce(draw, this)
 	},
 	onDrag(target){
-		const found = this.tools.find(mw => mw.ele == target)
+		const found = this.mods.find(mw => mw.ele == target)
 		if (!found) return target
 
 		const {x, y, ele: root} = Vec(found.ele).pos('root').out
@@ -38,13 +38,15 @@ Toolbar.prototype = {
 	},
 	save(){
 		return {
-			mod: this.tools.reduce((obj, tool, i) => {
-				const arr = tool.save()
-				obj[arr[0]] = {}
-				return obj
-			}, {})
+			mod: {
+				[this.name]: this.mods.reduce((obj, mod, i) => {
+					const arr = mod.save()
+					obj[arr[0]] = arr.slice(1)
+					return obj
+				}, {})
+			}
 		}
 	}
 }
 
-return Toolbar
+return Module

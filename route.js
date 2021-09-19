@@ -4,7 +4,7 @@ const MW = require('~/mw')
 
 const DEF_OPT = {width: 100, height: 30, border: 10, header: 20}
 
-function drawMW(ctx, name, i){
+function draw(ctx, name, i){
 	const o = ctx.opt
 	const host = ctx.inner
 	const mws = ctx.mws
@@ -22,7 +22,7 @@ function Route(host, name, opt, names){
 	this.constructor.call(this, host, name, o)
 
 	this.mws = []
-	names.reduce(drawMW, this)
+	names.reduce(draw, this)
 	this.reflow()
 }
 
@@ -64,7 +64,7 @@ Route.prototype = {
 		if (!yes) idx = mws.length
 
 		const text = target.getElementsByTagName('text')[0]
-		drawMW(this, text.textContent, idx)
+		draw(this, text.textContent, idx)
 		target.ownerSVGElement.removeChild(target)
 		this.reflow()
 	},
