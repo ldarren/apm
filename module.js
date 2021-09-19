@@ -31,7 +31,7 @@ Module.prototype = {
 		const {x, y, ele: root} = Vec(found.ele).pos('root').out
 		const o = Vec(found.ele).attr()('width', 'height').out
 
-		const mw = new MW(root, this.name + '.' + found.name, {x, y, width: o.width, height: o.height})
+		const mw = new MW(root, this.name + '.' + found.name, found.params, {x, y, width: o.width, height: o.height})
 		return mw.ele
 	},
 	save(){
