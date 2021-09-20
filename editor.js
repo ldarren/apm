@@ -57,7 +57,7 @@ function drawSpec(board, spec, opt = {}){
 function drawMod(board, name, mod, opt){
 	const id = MOD + '_' + name
 	const panel = Vec(board).draw('svg', opt).addAttr({id, x: opt.x, y: opt.y}).addCl('draggable', 'droppable').ele
-	mapped[id] = new Module(panel, name, {width: 200, height: 30, border: 10}, mod)
+	mapped[id] = new Module(panel, name, {width: 200, height: 60, border: 10}, mod)
 }
 
 function drawMods(board, mods, opts){
@@ -69,7 +69,7 @@ function drawMods(board, mods, opts){
 
 function drawRoute(board, name, {id, x = 0, y = 0} = {}, route = []){
 	const panel = Vec(board).draw('svg', {id, x, y}).addCl('draggable', 'droppable').ele
-	mapped[id] = new Route(panel, name, {width: 200, height: 30}, route)
+	mapped[id] = new Route(panel, name, {width: 200, height: 60}, route)
 }
 
 function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
@@ -96,12 +96,12 @@ function onDrag(draggable, droppable){
 	return panel.onDrag(draggable)
 }
 
-function onDrop(draggable, droppable){
+function onDrop(draggable, droppable, dragged){
 	if (draggable === droppable) return
 	if (!droppable) return destroy(draggable)
 	const panel = mapped[droppable.id]
 	if (!panel) return destroy(draggable)
-	return panel.onDrop(draggable)
+	return panel.onDrop(draggable, dragged)
 }
 
 return {

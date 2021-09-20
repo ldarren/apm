@@ -38,7 +38,7 @@ Route.prototype = {
 	},
 	onDrag(target){
 		const found = this.mws.find(mw => mw.ele == target)
-		if (!found) return target
+		if (!found) return this
 		const idx = this.mws.indexOf(found)
 		this.mws.splice(idx, 1)
 
@@ -46,10 +46,9 @@ Route.prototype = {
 		const o = Vec(found.ele).attr()('width', 'height').rm().out
 		this.reflow()
 
-		const mw = new MW(root, found.name, {x, y, width: o.width, height: o.height})
-		return mw.ele
+		return new MW(root, found.name, found.raws, {x, y, width: o.width, height: o.height})
 	},
-	onDrop(target){
+	onDrop(target, item){
 		const mws = this.mws
 		const {y: ty} = Vec(target).attr(parseInt)('y').out
 		const {y: iy} = Vec(this.inner).pos('root').out
@@ -63,7 +62,7 @@ Route.prototype = {
 		if (!yes) idx = mws.length
 
 		const text = target.getElementsByTagName('text')[0]
-		draw(this, [text.textContent], idx)
+		draw(this, [text.textContent, ...item.raws], idx)
 		target.ownerSVGElement.removeChild(target)
 		this.reflow()
 	},
