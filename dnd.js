@@ -53,7 +53,10 @@ function onDrag(ev){
 return {
 	onStart(ev){
 		const r = ev.target
-		startDrag(r.closest('.draggable'), ev.x, ev.y) || startClone(r.closest('.clonable'), ev.x, ev.y)
+		if (r.closest('.fix')) return
+		const x = ev.x
+		const y = ev.y
+		startDrag(r.closest('.draggable'), x, y) || startClone(r.closest('.clonable'), x, y)
 	},
 	callbacks(startCB, endCB){
 		dragCB = startCB

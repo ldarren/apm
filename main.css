@@ -29,23 +29,29 @@ main{
 	border-right:1px solid #bbc4ef;
 	background:#62bcfa;
 }
-svg.param text{
+svg.arg text{
 	fill:#999;
 	stroke:#000;
 }
-svg.param rect{
+svg.arg rect{
 	fill:#aaa;
 	stroke:#888;
 }
-svg.param.spec rect{
+svg.arg.hl rect{
+	stroke:#ff0;
+}
+svg.arg.sel rect{
+	fill:#ffa;
+}
+svg.arg.spec rect{
 	fill:#0aa;
 	stroke:#aab;
 }
-svg.param.ctx rect{
+svg.arg.ctx rect{
 	fill:#0aa;
 	stroke:#aab;
 }
-svg.param.data rect{
+svg.arg.data rect{
 	fill:#0aa;
 	stroke:#aab;
 }

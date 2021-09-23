@@ -62,10 +62,6 @@ Vec.prototype = {
 			return this
 		}
 	},
-	remEvt(...args){
-		this.ele.removeEventListener(name, func)
-		return this
-	},
 	addCl(...args){
 		this.ele.classList.add(...args)
 		return this
@@ -74,11 +70,12 @@ Vec.prototype = {
 		this.ele.classList.remove(...args)
 		return this
 	},
-	addEvt(name, func){
-		this.ele.addEventListener(name, func)
+	addEvt(name, func, ctx, opt){
+		if (ctx) this.ele.addEventListener(name, evt => func.call(ctx, evt), opt)
+		else this.ele.addEventListener(name, func, opt)
 		return this
 	},
-	remEvt(...args){
+	remEvt(name, func){
 		this.ele.removeEventListener(name, func)
 		return this
 	},
