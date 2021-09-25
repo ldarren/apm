@@ -5,6 +5,7 @@ const Module = require('~/module')
 const Spec = require('~/spec')
 const Button = require('~/button')
 const dnd = require('~/dnd')
+const saved = require('~/default.json')
 
 const SPEC = '@'
 const MOD = 'm'
@@ -12,35 +13,6 @@ const ROUTE = 'r'
 const MOD_OPT = {x: 5, y: 5, state: 0}
 
 let svg
-const saved = {
-	mods: {
-		qiqi: {
-			x: 10,
-			y: 10,
-			state: 0
-		},
-		util: {
-			x: 20,
-			y: 20,
-			state: 0
-		},
-		session: {
-			x: 30,
-			y: 30,
-			state: 0
-		}
-	},
-	spec: {
-		x: 10,
-		y: 200
-	},
-	addRouteBtn: {
-		x: 400,
-		y: 10,
-		width: 150,
-		height: 30
-	},
-}
 const mapped = {}
 
 function drawSpec(board, spec, opt = {}){
@@ -72,7 +44,7 @@ function drawRoute(board, name, {id, x = 0, y = 0} = {}, route = []){
 	mapped[id] = new Route(panel, name, {width: 200, height: 60}, route)
 }
 
-function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
+function drawRoutes(board, mod, routes = {}, {x = 0, y = 0} = {}){
 	const keys = Object.keys(routes)
 	let id
 	keys.forEach((key, i) => drawRoute(board, key, {id: ROUTE + '_' + key, x: x + (i * 10), y: y + (i * 10)}, routes[key]))
@@ -116,7 +88,7 @@ return {
 		btn.on('click', addRoute, this)
 		drawMods(svg, data.mod, saved.mods)
 		drawSpec(svg, data.spec, saved.spec)
-		drawRoutes(svg, data.routes, {x: 300, y: 50})
+		drawRoutes(svg, data.mod, data.routes, {x: 300, y: 50})
 	},
 	save(){
 		return Object.keys(mapped).reduce((data, key) => {

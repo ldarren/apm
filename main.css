@@ -17,6 +17,9 @@ body{
 .truncate{
 	text-overflow: ellipsis;
 }
+text{
+	cursor: default;
+}
 nav{
 	min-height: 4rem;
 	display:flex;
