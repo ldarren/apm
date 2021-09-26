@@ -1,13 +1,17 @@
-let curr 
+let dest 
 
 return {
 	dest(target){
-		if (curr) curr.rect.classList.remove('dst')	
-		target.rect.classList.add('dst')
-		curr = target
+		if (dest) dest.rect.classList.remove('dst')	
+		if (target) target.rect.classList.add('dst')
+		dest = target
 	},
-	getDest(){
+	hasDest(){
+		return void 0 !== dest
 	},
-	source(){
+	src(target){
+		if (!dest) return
+		dest.addValue(target)
+		this.dest()
 	}
 }

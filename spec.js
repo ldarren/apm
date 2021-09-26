@@ -18,7 +18,7 @@ Spec.prototype = {
 		keys.reduce((ctx, name, i) => {
 			const host = ctx.inner
 			const o = ctx.opt
-			const p = new Value(host, name, values[name], {x: 0, y: (i * o.height), width: o.width, height: o.height})
+			const p = new Value(host, name, values[name], {x: 0, y: (i * o.height), width: o.width, height: o.height, type: 'spec'})
 			ctx.values.push(p)
 
 			return ctx

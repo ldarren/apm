@@ -32,29 +32,30 @@ main{
 	border-right:1px solid #bbc4ef;
 	background:#62bcfa;
 }
-svg.arg text{
+svg.arg text, svg.val text{
+	font-size:90%;
 	fill:#999;
 	stroke:#000;
 }
-svg.arg rect{
+svg.arg rect, svg.val rect{
 	fill:#aaa;
 	stroke:#888;
 }
-svg.arg.spec rect{
+svg.arg.spec rect, svg.val.spec rect{
 	fill:#0aa;
 	stroke:#aab;
 }
-svg.arg.ctx rect{
+svg.arg.ctx rect, svg.val.ctx rect{
 	fill:#0aa;
 	stroke:#aab;
 }
-svg.arg.data rect{
+svg.arg.data rect, svg.val.data rect{
 	fill:#0aa;
 	stroke:#aab;
 }
-svg.arg.hl rect{
+svg.arg.hl rect, svg.val.hl rect{
 	stroke:#ff0;
 }
-svg.arg.dst rect{
+svg.arg.dst rect, svg.val.src rect{
 	fill:#ffa;
 }

@@ -34,14 +34,14 @@ function Arg(host, name, value, opt){
 		.addEvt('mousedown', click, this).ele
 	this.rect = Vec(this.ele).draw('rect', {x:0, y:0, width:'100%', height:'100%'})
 		.host().draw('title').text(tooltip)
-		.host().draw('text', {x: 10, y:20}).text(display)
+		.host().draw('text', {'text-anchor': 'middle', 'dominant-baseline': 'middle', 'font-family':'monospace', x: '50%', y: '50%'}).text(display)
 		.host().ele
 }
 
 Arg.prototype = {
 	type(){
 		const v = this.value
-		if (undefined === v) return ['empty', this.name, 'E']
+		if (undefined === v) return ['empty', this.name, this.name]
 		if (!v.charAt) return ['const', JSON.stringify(v), 'C']
 		const arr = v.split('.')
 		return [TYPE_PREFIX[arr[0]] || 'const', v, arr[arr.length-1]]
@@ -51,7 +51,9 @@ Arg.prototype = {
 	},
 	save(){
 		return [this.value]
-	}
+	},
+	addValue(val){
+	},
 }
 
 return Arg
