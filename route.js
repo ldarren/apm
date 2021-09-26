@@ -1,4 +1,5 @@
 inherit('~/panel')
+const pObj = require('pico/obj')
 const Vec = require('~/vec')
 const MW = require('~/mw')
 
@@ -8,7 +9,8 @@ function draw(ctx, arr, i){
 	const o = ctx.opt
 	const host = ctx.inner
 	const mws = ctx.mws
-	const mw  = new MW(host, arr[0], arr.slice(1), {x: 0, y: (i * o.height), width: o.width, height: o.height})
+	const key = arr[0]
+	const mw  = new MW(host, key, pObj.dot(ctx.mods, key.split('.')), arr.slice(1), {x: 0, y: (i * o.height), width: o.width, height: o.height})
 	if (!i) mws.unshift(mw)
 	else if (i >= mws.length) mws.push(mw)
 	else mws.splice(i, 0, mw)
@@ -16,10 +18,11 @@ function draw(ctx, arr, i){
 	return ctx
 }
 
-function Route(host, name, opt, names){
+function Route(host, name, opt, mods, names){
 	const o = Object.assign({}, DEF_OPT, opt || {})
 	this.constructor.call(this, host, name, o)
 
+	this.mods = mods // hold a copy of editor's mods
 	this.mws = []
 	names.reduce(draw, this)
 	this.reflow()
@@ -46,7 +49,7 @@ Route.prototype = {
 		const o = Vec(found.ele).attr()('width', 'height').rm().out
 		this.reflow()
 
-		return new MW(root, found.name, found.raws, {x, y, width: o.width, height: o.height})
+		return new MW(root, found.name, pObj.dot(this.mods, found.name.split('.')), found.values(), {x, y, width: o.width, height: o.height})
 	},
 	onDrop(target, item){
 		const mws = this.mws
@@ -62,7 +65,7 @@ Route.prototype = {
 		if (!yes) idx = mws.length
 
 		const text = target.getElementsByTagName('text')[0]
-		draw(this, [text.textContent, ...item.raws], idx)
+		draw(this, [text.textContent, ...item.values()], idx)
 		target.ownerSVGElement.removeChild(target)
 		this.reflow()
 	},

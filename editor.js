@@ -13,6 +13,7 @@ const ROUTE = 'r'
 const MOD_OPT = {x: 5, y: 5, state: 0}
 
 let svg
+const mods = {}
 const mapped = {}
 
 function drawSpec(board, spec, opt = {}){
@@ -28,6 +29,7 @@ function drawSpec(board, spec, opt = {}){
 
 function drawMod(board, name, mod, opt){
 	const id = MOD + '_' + name
+	if (mapped[id]) return
 	const panel = Vec(board).draw('svg', opt).addAttr({id, x: opt.x, y: opt.y}).addCl('draggable', 'droppable').ele
 	mapped[id] = new Module(panel, name, {width: 200, height: 60, border: 10}, mod)
 }
@@ -40,13 +42,13 @@ function drawMods(board, mods, opts){
 }
 
 function drawRoute(board, name, {id, x = 0, y = 0} = {}, route = []){
+	if (mapped[id]) return
 	const panel = Vec(board).draw('svg', {id, x, y}).addCl('draggable', 'droppable').ele
-	mapped[id] = new Route(panel, name, {width: 200, height: 60}, route)
+	mapped[id] = new Route(panel, name, {width: 200, height: 60}, mods, route)
 }
 
-function drawRoutes(board, mod, routes = {}, {x = 0, y = 0} = {}){
+function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
 	const keys = Object.keys(routes)
-	let id
 	keys.forEach((key, i) => drawRoute(board, key, {id: ROUTE + '_' + key, x: x + (i * 10), y: y + (i * 10)}, routes[key]))
 }
 
@@ -86,9 +88,10 @@ return {
 		data = data || {}
 		const btn = new Button(svg, 'New Route', saved.addRouteBtn)
 		btn.on('click', addRoute, this)
-		drawMods(svg, data.mod, saved.mods)
+		Object.assign(mods, data.mod)
+		drawMods(svg, mods, saved.mods)
 		drawSpec(svg, data.spec, saved.spec)
-		drawRoutes(svg, data.mod, data.routes, {x: 300, y: 50})
+		drawRoutes(svg, data.routes, {x: 300, y: 50})
 	},
 	save(){
 		return Object.keys(mapped).reduce((data, key) => {

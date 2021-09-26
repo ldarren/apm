@@ -40,12 +40,6 @@ svg.arg rect{
 	fill:#aaa;
 	stroke:#888;
 }
-svg.arg.hl rect{
-	stroke:#ff0;
-}
-svg.arg.sel rect{
-	fill:#ffa;
-}
 svg.arg.spec rect{
 	fill:#0aa;
 	stroke:#aab;
@@ -57,4 +51,10 @@ svg.arg.ctx rect{
 svg.arg.data rect{
 	fill:#0aa;
 	stroke:#aab;
+}
+svg.arg.hl rect{
+	stroke:#ff0;
+}
+svg.arg.dst rect{
+	fill:#ffa;
 }
