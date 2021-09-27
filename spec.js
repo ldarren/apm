@@ -18,7 +18,7 @@ Spec.prototype = {
 		keys.reduce((ctx, name, i) => {
 			const host = ctx.inner
 			const o = ctx.opt
-			const p = new Value(host, name, values[name], {x: 0, y: (i * o.height), width: o.width, height: o.height, type: 'spec'})
+			const p = new Value(host, name, values[name], 'spec', {x: 0, y: (i * o.height), width: o.width, height: o.height})
 			ctx.values.push(p)
 
 			return ctx
@@ -31,7 +31,7 @@ Spec.prototype = {
 		const {x, y, ele: root} = Vec(found.ele).pos('root').out
 		const o = Vec(found.ele).attr()('width', 'height').out
 
-		const p = new Value(root, '@.' + found.name, found.value, {x, y, width: o.width, height: o.height})
+		const p = new Value(root, found.name, found.value, found.type, {x, y, width: o.width, height: o.height})
 		return p.ele
 	},
 	save(){

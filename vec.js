@@ -92,6 +92,10 @@ Vec.prototype = {
 		this.ele = null
 		return this
 	},
+	clear(){
+		this.ele.replaceChildren()
+		return this
+	},
 	pos(cl){
 		let e = this.ele
 		let x = 0

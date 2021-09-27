@@ -53,6 +53,14 @@ Arg.prototype = {
 		return [this.value]
 	},
 	addValue(val){
+		const [oldType] = this.type()
+		this.value = val
+		const [type, tooltip, display] = this.type()
+		Vec(this.ele).remCl(oldType).addCl(type).clear()
+		this.rect = Vec(this.ele).draw('rect', {x:0, y:0, width:'100%', height:'100%'})
+			.host().draw('title').text(tooltip)
+			.host().draw('text', {'text-anchor': 'middle', 'dominant-baseline': 'middle', 'font-family':'monospace', x: '50%', y: '50%'}).text(display)
+			.host().ele
 	},
 }
 

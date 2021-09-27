@@ -46,11 +46,11 @@ svg.arg.spec rect, svg.val.spec rect{
 	stroke:#aab;
 }
 svg.arg.ctx rect, svg.val.ctx rect{
-	fill:#0aa;
+	fill:#a0a;
 	stroke:#aab;
 }
 svg.arg.data rect, svg.val.data rect{
-	fill:#0aa;
+	fill:#aa0;
 	stroke:#aab;
 }
 svg.arg.hl rect, svg.val.hl rect{

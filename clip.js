@@ -9,9 +9,9 @@ return {
 	hasDest(){
 		return void 0 !== dest
 	},
-	src(target){
+	src(value){
 		if (!dest) return
-		dest.addValue(target)
+		dest.addValue(value)
 		this.dest()
 	}
 }
