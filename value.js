@@ -9,7 +9,7 @@ const TYPE_PREFIX = {
 const DEF_OPT = {width: 80, height: 50}
 
 function enter(evt){
-	if (Clip.hasDest()) this.rect.classList.add('hl')
+	if (!Clip.compare()) this.rect.classList.add('hl')
 }
 
 function leave(evt){
@@ -32,8 +32,8 @@ function Value(host, name, value, type, opt){
 		.addEvt('mouseleave', leave, this)
 		.addEvt('mousedown', click, this).ele
 	this.rect = Vec(this.ele).draw('rect', {x:0, y:0, width:'100%', height:'100%'})
-		.host().draw('title').text(this.fullName())
-		.host().draw('text', {'text-anchor': 'middle', 'dominant-baseline': 'middle', 'font-family':'monospace', x: '50%', y: '50%'}).text(name)
+		.host().draw('title').text(JSON.stringify(value, null, '\t'))
+		.host().draw('text', {'text-anchor': 'middle', 'dominant-baseline': 'middle', 'font-family':'monospace', x: '50%', y: '50%'}).text(this.fullName())
 		.host().ele
 }
 

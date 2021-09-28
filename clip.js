@@ -3,11 +3,15 @@ let dest
 return {
 	dest(target){
 		if (dest) dest.rect.classList.remove('dst')	
-		if (target) target.rect.classList.add('dst')
-		dest = target
+		if (target && target !== dest) {
+			target.rect.classList.add('dst')
+			dest = target
+		}else{
+			dest = void 0
+		}
 	},
-	hasDest(){
-		return void 0 !== dest
+	compare(target){
+		return target === dest
 	},
 	src(value){
 		if (!dest) return

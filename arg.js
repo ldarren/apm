@@ -17,7 +17,11 @@ function leave(evt){
 }
 
 function click(evt){
-	Clip.dest(this)
+	if (Clip.compare() || Clip.compare(this) || !this.value){
+		Clip.dest(this)
+	}else{
+		Clip.src(this.value)
+	}
 }
 
 function Arg(host, name, value, opt){
