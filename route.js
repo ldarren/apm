@@ -2,6 +2,7 @@ inherit('~/panel')
 const pObj = require('pico/obj')
 const Vec = require('~/vec')
 const MW = require('~/mw')
+const Params = require('~/params')
 
 const DEF_OPT = {width: 100, height: 30, border: 10, header: 20}
 
@@ -21,6 +22,8 @@ function draw(ctx, arr, i){
 function Route(host, name, opt, mods, names){
 	const o = Object.assign({}, DEF_OPT, opt || {})
 	this.constructor.call(this, host, name, o)
+	this.ele.addEventListener('open', evt => Params.show(this.name, {data: 'foo'}, ['const']))
+	this.ele.addEventListener('close', evt => Params.close(this.name))
 
 	this.mods = mods // hold a copy of editor's mods
 	this.mws = []

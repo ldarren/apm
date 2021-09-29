@@ -17,7 +17,8 @@ function leave(evt){
 }
 
 function click(evt){
-	if (Clip.compare() || Clip.compare(this) || !this.value){
+	if (Clip.compare() || !this.value || Clip.compare(this)){
+		// if not selected or empty or is the same dest
 		Clip.dest(this)
 	}else{
 		Clip.src(this.value)

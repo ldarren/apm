@@ -2,7 +2,8 @@ const pObj = require('pico/obj')
 const Vec = require('~/vec')
 const Route = require('~/route')
 const Module = require('~/module')
-const Spec = require('~/spec')
+const Spec = require('~/params/spec')
+const Params = require('~/params')
 const Button = require('~/button')
 const dnd = require('~/dnd')
 const saved = require('~/default.json')
@@ -82,6 +83,7 @@ return {
 	load(container, data){
 		svg = Vec(container).draw('svg', {x:0, y:0, width:'100%', height:'100%'}).addCl('root').addEvt('mousedown', dnd.onStart).ele
 		dnd.callbacks(onDrag, onDrop)
+		Params.init(saved.params)
 		this.reload(data)
 	},
 	reload(data){
