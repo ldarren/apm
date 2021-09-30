@@ -23,7 +23,7 @@ function drawSpec(board, spec, opt = {}){
 	if (global){
 		global.add(spec)
 	}else{
-		const panel = Vec(board).draw('svg', opt).addAttr({id: SPEC, x: opt.x, y: opt.y}).addCl('draggable', 'droppable').ele
+		const panel = Vec(board).draw('svg', opt).addAttr({id: SPEC}).addCl('draggable', 'droppable').ele
 		mapped[SPEC] = new Spec(panel, 'Spec', {width: 200, height: 30, border: 10}, spec)
 	}
 }
@@ -83,7 +83,7 @@ return {
 	load(container, data){
 		svg = Vec(container).draw('svg', {x:0, y:0, width:'100%', height:'100%'}).addCl('root').addEvt('mousedown', dnd.onStart).ele
 		dnd.callbacks(onDrag, onDrop)
-		Params.init(saved.params)
+		Params.init(svg, saved.params)
 		this.reload(data)
 	},
 	reload(data){
