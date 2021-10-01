@@ -66,7 +66,7 @@ function destroy(target){
 
 function onDrag(draggable, droppable){
 	if (!droppable) return destroy(draggable)
-	const panel = mapped[droppable.id]
+	const panel = mapped[droppable.id] || Params.getById(droppable.id)
 	if (!panel) return destroy(draggable)
 	return panel.onDrag(draggable)
 }
@@ -74,7 +74,7 @@ function onDrag(draggable, droppable){
 function onDrop(draggable, droppable, dragged){
 	if (draggable === droppable) return
 	if (!droppable) return destroy(draggable)
-	const panel = mapped[droppable.id]
+	const panel = mapped[droppable.id] || Params.getById(droppable.id)
 	if (!panel) return destroy(draggable)
 	return panel.onDrop(draggable, dragged)
 }

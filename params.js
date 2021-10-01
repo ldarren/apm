@@ -27,16 +27,23 @@ return {
 		host = h
 		saved = s
 	},
-	show(route, data, consts){
+	show(route, data){
 		panelCtx = draw(Ctx, CTX, 'CTX', route, saved.ctx)
 		panelData = draw(Data, DATA, 'DATA', data, saved.data)
-		panelConst = draw(Const, CONST, 'CONST', consts, saved.const)
+		panelConst = draw(Const, CONST, 'CONST', null, saved.const)
 	},
 	close(route){
 		remove(panelCtx.ele)
 		remove(panelData.ele)
 		remove(panelConst.ele)
 		panelCtx = panelData = panelConst = void 0
+	},
+	getById(id){
+		switch(id){
+		case CTX: return panelCtx
+		case DATA: return panelData
+		case CONST: return panelConst
+		}
 	},
 	save(){
 	}

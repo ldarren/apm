@@ -1,24 +1,29 @@
 inherit('~/panel')
 const Vec = require('~/vec')
-const Value = require('~/value')
+const Value2 = require('~/value2')
 
 const DEF_OPT = {width: 100, height: 30, border: 10, header: 20}
 
-function Const(host, name, opt = {}, values = {}){
+function Const(host, name, opt = {}){
 	const o = Object.assign({}, DEF_OPT, opt || {})
 	this.constructor.call(this, host, name, o)
 	this.values = []
-	this.add(values)
+
+	this.add([
+		'Null',
+		'Number',
+		'String',
+		'Object'
+	])
 }
 
 Const.prototype = {
-	add(values){
-		const keys = Object.keys(values)
+	add(keys){
 		this.expand(keys.length)
 		keys.reduce((ctx, name, i) => {
 			const host = ctx.inner
 			const o = ctx.opt
-			const p = new Value(host, name, values[name], 'const', {x: 0, y: (i * o.height), width: o.width, height: o.height})
+			const p = new Value2(host, name, {x: 0, y: (i * o.height), width: o.width, height: o.height})
 			ctx.values.push(p)
 
 			return ctx
@@ -31,7 +36,7 @@ Const.prototype = {
 		const {x, y, ele: root} = Vec(found.ele).pos('root').out
 		const o = Vec(found.ele).attr()('width', 'height').out
 
-		const p = new Value(root, found.name, found.value, found.type, {x, y, width: o.width, height: o.height})
+		const p = new Value2(root, found.name, {x, y, width: o.width, height: o.height})
 		return p.ele
 	},
 	save(){

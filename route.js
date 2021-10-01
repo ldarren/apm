@@ -22,7 +22,7 @@ function draw(ctx, arr, i){
 function Route(host, name, opt, mods, names){
 	const o = Object.assign({}, DEF_OPT, opt || {})
 	this.constructor.call(this, host, name, o)
-	this.ele.addEventListener('open', evt => Params.show({name: this.name}, {data: 'foo'}, ['const']))
+	this.ele.addEventListener('open', evt => Params.show({name: this.name}, {data: 'foo'}))
 	this.ele.addEventListener('close', evt => Params.close(this.name))
 
 	this.mods = mods // hold a copy of editor's mods
