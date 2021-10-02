@@ -2,9 +2,11 @@ const pObj = require('pico/obj')
 const Vec = require('~/vec')
 const Route = require('~/route')
 const Module = require('~/module')
-const Spec = require('~/spec')
+const Spec = require('~/params/spec')
+const Params = require('~/params')
 const Button = require('~/button')
 const dnd = require('~/dnd')
+const saved = require('~/default.json')
 
 const SPEC = '@'
 const MOD = 'm'
@@ -12,35 +14,7 @@ const ROUTE = 'r'
 const MOD_OPT = {x: 5, y: 5, state: 0}
 
 let svg
-const saved = {
-	mods: {
-		qiqi: {
-			x: 10,
-			y: 10,
-			state: 0
-		},
-		util: {
-			x: 20,
-			y: 20,
-			state: 0
-		},
-		session: {
-			x: 30,
-			y: 30,
-			state: 0
-		}
-	},
-	spec: {
-		x: 10,
-		y: 200
-	},
-	addRouteBtn: {
-		x: 400,
-		y: 10,
-		width: 150,
-		height: 30
-	},
-}
+const mods = {}
 const mapped = {}
 
 function drawSpec(board, spec, opt = {}){
@@ -49,15 +23,16 @@ function drawSpec(board, spec, opt = {}){
 	if (global){
 		global.add(spec)
 	}else{
-		const panel = Vec(board).draw('svg', opt).addAttr({id: SPEC, x: opt.x, y: opt.y}).addCl('draggable', 'droppable').ele
+		const panel = Vec(board).draw('svg', opt).addAttr({id: SPEC}).addCl('draggable', 'droppable').ele
 		mapped[SPEC] = new Spec(panel, 'Spec', {width: 200, height: 30, border: 10}, spec)
 	}
 }
 
 function drawMod(board, name, mod, opt){
 	const id = MOD + '_' + name
+	if (mapped[id]) return
 	const panel = Vec(board).draw('svg', opt).addAttr({id, x: opt.x, y: opt.y}).addCl('draggable', 'droppable').ele
-	mapped[id] = new Module(panel, name, {width: 200, height: 30, border: 10}, mod)
+	mapped[id] = new Module(panel, name, {width: 200, height: 60, border: 10}, mod)
 }
 
 function drawMods(board, mods, opts){
@@ -68,13 +43,13 @@ function drawMods(board, mods, opts){
 }
 
 function drawRoute(board, name, {id, x = 0, y = 0} = {}, route = []){
+	if (mapped[id]) return
 	const panel = Vec(board).draw('svg', {id, x, y}).addCl('draggable', 'droppable').ele
-	mapped[id] = new Route(panel, name, {width: 200, height: 30}, route)
+	mapped[id] = new Route(panel, name, {width: 200, height: 60}, mods, route)
 }
 
 function drawRoutes(board, routes = {}, {x = 0, y = 0} = {}){
 	const keys = Object.keys(routes)
-	let id
 	keys.forEach((key, i) => drawRoute(board, key, {id: ROUTE + '_' + key, x: x + (i * 10), y: y + (i * 10)}, routes[key]))
 }
 
@@ -91,30 +66,32 @@ function destroy(target){
 
 function onDrag(draggable, droppable){
 	if (!droppable) return destroy(draggable)
-	const panel = mapped[droppable.id]
+	const panel = mapped[droppable.id] || Params.getById(droppable.id)
 	if (!panel) return destroy(draggable)
 	return panel.onDrag(draggable)
 }
 
-function onDrop(draggable, droppable){
+function onDrop(draggable, droppable, dragged){
 	if (draggable === droppable) return
 	if (!droppable) return destroy(draggable)
-	const panel = mapped[droppable.id]
+	const panel = mapped[droppable.id] || Params.getById(droppable.id)
 	if (!panel) return destroy(draggable)
-	return panel.onDrop(draggable)
+	return panel.onDrop(draggable, dragged)
 }
 
 return {
 	load(container, data){
 		svg = Vec(container).draw('svg', {x:0, y:0, width:'100%', height:'100%'}).addCl('root').addEvt('mousedown', dnd.onStart).ele
 		dnd.callbacks(onDrag, onDrop)
+		Params.init(svg, saved.params)
 		this.reload(data)
 	},
 	reload(data){
 		data = data || {}
 		const btn = new Button(svg, 'New Route', saved.addRouteBtn)
 		btn.on('click', addRoute, this)
-		drawMods(svg, data.mod, saved.mods)
+		Object.assign(mods, data.mod)
+		drawMods(svg, mods, saved.mods)
 		drawSpec(svg, data.spec, saved.spec)
 		drawRoutes(svg, data.routes, {x: 300, y: 50})
 	},

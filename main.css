@@ -1,5 +1,5 @@
 html{
-	font-size:62.5%;
+	font-size:80%;
     font-family:monospace,sans-serif;
 	color:#fccdd3;
 }
@@ -17,6 +17,9 @@ body{
 .truncate{
 	text-overflow: ellipsis;
 }
+text{
+	cursor: default;
+}
 nav{
 	min-height: 4rem;
 	display:flex;
@@ -28,4 +31,34 @@ main{
 	flex: 1;
 	border-right:1px solid #bbc4ef;
 	background:#62bcfa;
+}
+svg.arg text, svg.val text{
+	fill:#999;
+	stroke:#000;
+}
+svg.arg rect, svg.val rect{
+	fill:#aaa;
+	stroke:#888;
+}
+svg.arg.spec rect, svg.val.spec rect{
+	fill:#0aa;
+	stroke:#aab;
+}
+svg.arg.ctx rect, svg.val.ctx rect{
+	fill:#a0a;
+	stroke:#aab;
+}
+svg.arg.data rect, svg.val.data rect{
+	fill:#aa0;
+	stroke:#aab;
+}
+svg.arg.const rect, svg.val.const rect{
+	fill:#9e9;
+	stroke:#aab;
+}
+svg.arg.hl rect, svg.val.hl rect{
+	stroke:#ff0;
+}
+svg.arg.dst rect, svg.val.src rect{
+	fill:#ffa;
 }

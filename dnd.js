@@ -4,12 +4,13 @@ let ox = 0
 let oy = 0
 let dragCB = () => {}
 let dropCB = () => {}
+let dragged
 
 function startDrag(r, ex, ey){
 	if (!r) return 0
-	const item = dragCB(r.closest('.draggable'), r.closest('.droppable'))
+	dragged = dragCB(r.closest('.draggable'), r.closest('.droppable'))
 
-	const {x, y} = Vec(item).toTop().addCl('sel').addEvt('mouseup', onEnd).attr(parseInt)('x', 'y').out
+	const {x, y} = Vec(dragged.ele).toTop().addCl('sel').addEvt('mouseup', onEnd).attr(parseInt)('x', 'y').out
 	ox = x - ex
 	oy = y - ey
 	window.addEventListener('mousemove', onDrag)
@@ -40,7 +41,7 @@ function onEnd(ev){
 		if (droppable) break
 	}
 
-	dropCB(r.closest('.draggable'), droppable)
+	dropCB(r.closest('.draggable'), droppable, dragged)
 }
 
 function onDrag(ev){
@@ -52,7 +53,10 @@ function onDrag(ev){
 return {
 	onStart(ev){
 		const r = ev.target
-		startDrag(r.closest('.draggable'), ev.x, ev.y) || startClone(r.closest('.clonable'), ev.x, ev.y)
+		if (r.closest('.fix')) return
+		const x = ev.x
+		const y = ev.y
+		startDrag(r.closest('.draggable'), x, y) || startClone(r.closest('.clonable'), x, y)
 	},
 	callbacks(startCB, endCB){
 		dragCB = startCB
