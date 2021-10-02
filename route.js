@@ -22,7 +22,7 @@ function draw(ctx, arr, i){
 function Route(host, name, opt, mods, names){
 	const o = Object.assign({}, DEF_OPT, opt || {})
 	this.constructor.call(this, host, name, o)
-	this.ele.addEventListener('open', evt => Params.show({name: this.name}, {data: 'foo'}))
+	this.ele.addEventListener('open', evt => Params.show(this.name, this.getData()))
 	this.ele.addEventListener('close', evt => Params.close(this.name))
 
 	this.mods = mods // hold a copy of editor's mods
@@ -71,6 +71,13 @@ Route.prototype = {
 		draw(this, [text.textContent, ...item.values()], idx)
 		target.ownerSVGElement.removeChild(target)
 		this.reflow()
+	},
+	getData(){
+		const set = this.mws.reduce((set, mw) => {
+			mw.getData().forEach(set.add, set)
+			return set
+		}, new Set)
+		return [...set]
 	},
 	save(){
 		return {

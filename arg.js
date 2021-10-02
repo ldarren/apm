@@ -47,15 +47,13 @@ Arg.prototype = {
 	type(){
 		const v = this.value
 		if (undefined === v) return ['empty', this.name, this.name]
-		if (!v.charAt) return ['const', JSON.stringify(v), 'C']
+		if (!v || !v.charAt) return ['const', JSON.stringify(v), 'C']
 		const arr = v.split('.')
+		if (1 === arr.length) return ['const', v, 'C']
 		return [TYPE_PREFIX[arr[0]] || 'const', v, arr[arr.length-1]]
 	},
 	isEmpty(){
 		return void 0 === this.value
-	},
-	save(){
-		return [this.value]
 	},
 	addValue(val){
 		const [oldType] = this.type()

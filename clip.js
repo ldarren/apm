@@ -19,9 +19,9 @@ return {
 	compare(target){
 		return target === dest
 	},
-	src(value, isRaw){
+	src(value){
 		if (!dest) return
-		dest.addValue(value, isRaw)
+		dest.addValue(value)
 		this.dest()
 	}
 }

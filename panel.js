@@ -25,7 +25,7 @@ Panel.prototype = {
 		hhost.setAttribute('width', (o.border * 2) + o.width)
 	},
 	onDrag(target){
-		return target
+		return this
 	},
 	onDrop(target){
 		target.ownerSVGElement.removeChild(target)

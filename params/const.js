@@ -1,8 +1,31 @@
 inherit('~/panel')
 const Vec = require('~/vec')
+const Clip = require('~/clip')
 const Value2 = require('~/value2')
 
 const DEF_OPT = {width: 100, height: 30, border: 10, header: 20}
+
+function click(evt){
+	const name = this.name
+	let val
+	switch(name){
+	default:
+	case 'Undefined': break
+	case 'Null':
+		val = null;
+		break
+	case 'Number':
+		val = parseFloat(window.prompt(`Enter a ${name}`, 0) || '0')
+		break
+	case 'String':
+		val = window.prompt(`Enter a ${name}`, '') || ''
+		break
+	case 'Object':
+		val = JSON.parse(window.prompt(`Enter a ${name}`, '[]') || '[]')
+		break
+	}
+	Clip.src(val)
+}
 
 function Const(host, name, opt = {}){
 	const o = Object.assign({}, DEF_OPT, opt || {})
@@ -10,6 +33,7 @@ function Const(host, name, opt = {}){
 	this.values = []
 
 	this.add([
+		'Undefined',
 		'Null',
 		'Number',
 		'String',
@@ -23,21 +47,11 @@ Const.prototype = {
 		keys.reduce((ctx, name, i) => {
 			const host = ctx.inner
 			const o = ctx.opt
-			const p = new Value2(host, name, {x: 0, y: (i * o.height), width: o.width, height: o.height})
+			const p = new Value2(host, name, click, {x: 0, y: (i * o.height), width: o.width, height: o.height})
 			ctx.values.push(p)
 
 			return ctx
 		}, this)
-	},
-	onDrag(target){
-		const found = this.values.find(p => p.ele == target)
-		if (!found) return this
-
-		const {x, y, ele: root} = Vec(found.ele).pos('root').out
-		const o = Vec(found.ele).attr()('width', 'height').out
-
-		const p = new Value2(root, found.name, {x, y, width: o.width, height: o.height})
-		return p.ele
 	},
 	save(){
 		return {

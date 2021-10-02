@@ -35,8 +35,16 @@ MW.prototype = {
 	values(){
 		return this.args.map(arg => arg.value)
 	},
-	save(){
-		return [this.name, ...this.args]
+	getData(){
+		const set = this.args.reduce((set, arg) => {
+			const v = arg.value
+			if (v && '_' === v.charAt(0)) set.add(v)
+			return set
+		}, new Set)
+		return set
+	},
+	save(key = 'value'){
+		return [this.name, ...this.args.map(arg => arg[key])]
 	}
 }
 

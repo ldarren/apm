@@ -38,7 +38,7 @@ Module.prototype = {
 		return {
 			mod: {
 				[this.name]: this.mws.reduce((obj, mod, i) => {
-					const arr = mod.save()
+					const arr = mod.save('name')
 					obj[arr[0]] = arr.slice(1)
 					return obj
 				}, {})
