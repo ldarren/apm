@@ -2,16 +2,29 @@ inherit('~/panel')
 const pObj = require('pico/obj')
 const Vec = require('~/vec')
 const MW = require('~/mw')
+const Partial = require('~/partial')
 const Params = require('~/params')
 
 const DEF_OPT = {width: 100, height: 30, border: 10, header: 20}
+
+function currying(arr, mods){
+	if (!Array.isArray(arr)) return new Partial(arr)
+	const name = arr[0]
+	const meta = pObj.dot(mods, name.split('.'))
+	const keys = meta[0]
+	return new Partial(name, keys, arr.slice(1))
+}
 
 function draw(ctx, arr, i){
 	const o = ctx.opt
 	const host = ctx.inner
 	const mws = ctx.mws
 	const key = arr[0]
-	const mw  = new MW(host, key, pObj.dot(ctx.mods, key.split('.')), arr.slice(1), {x: 0, y: (i * o.height), width: o.width, height: o.height})
+	const partial = currying(arr[0], ctx.mods)
+	let meta = pObj.dot(ctx.mods, partial.name.split('.'))
+	meta = partial.keys ? meta[1] : meta
+
+	const mw  = new MW(host, partial, meta, arr.slice(1), {x: 0, y: (i * o.height), width: o.width, height: o.height})
 	if (!i) mws.unshift(mw)
 	else if (i >= mws.length) mws.push(mw)
 	else mws.splice(i, 0, mw)
@@ -52,7 +65,7 @@ Route.prototype = {
 		const o = Vec(found.ele).attr()('width', 'height').rm().out
 		this.reflow()
 
-		return new MW(root, found.name, pObj.dot(this.mods, found.name.split('.')), found.values(), {x, y, width: o.width, height: o.height})
+		return new MW(root, found.partial, found.argNames(), found.values(), {x, y, width: o.width, height: o.height})
 	},
 	onDrop(target, item){
 		const mws = this.mws
@@ -68,7 +81,7 @@ Route.prototype = {
 		if (!yes) idx = mws.length
 
 		const text = target.getElementsByTagName('text')[0]
-		draw(this, [text.textContent, ...item.values()], idx)
+		draw(this, [item.partial.save(), ...item.values()], idx)
 		target.ownerSVGElement.removeChild(target)
 		this.reflow()
 	},
