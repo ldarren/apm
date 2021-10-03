@@ -3,27 +3,26 @@ const Arg = require('~/arg')
 
 const DEF_OPT = {width: 80, height: 100}
 
-function MW(host, name, argNames, values, opt){
+function MW(host, partial, keys, kvalues, opt){
 	const o = Object.assign({}, DEF_OPT, opt)
 
 	this.host = host
-	this.name = name
+	this.partial = partial
 	this.args = []
 	this.ele = Vec(host).draw('svg', o).addCl('draggable')
 		.draw('rect', {x:0, y:0, width:'100%', height:'100%'}).style({fill:'#a00', stroke:'#baa'}).addCl('mw')
-		.host().draw('title').text(name)
-		.host().draw('text', {x: 10, y:20}).style({fill:'#999', stroke:'#000'}).text(name)
 		.host().ele
-	this.inner = Vec(this.ele).draw('svg', {x:0, y:'50%', width:'100%', height:'50%'}).addCl('inner').ele
-	this.add(argNames, values)
+	partial.draw(this.ele)
+	this.inner = Vec(this.ele).draw('svg', {x:0, y:'40', width:'100%', height:'50%'}).addCl('inner').ele
+
+	this.add(keys, kvalues)
 }
 
 MW.prototype = {
-	add(names, values){
+	add(keys, values){
 		const host = this.inner
-		const o = this.opt
-		names.reduce((ctx, name, i) => {
-			const arg = new Arg(host, name, values[i], {x:(i * 30), y:0, width: 30, height: 30})
+		keys.reduce((ctx, key, i) => {
+			const arg = new Arg(host, key, values[i], {x:(i * 30), y:0, width: 30, height: 20})
 			ctx.args.push(arg)
 
 			return ctx
@@ -44,7 +43,7 @@ MW.prototype = {
 		return set
 	},
 	save(key = 'value'){
-		return [this.name, ...this.args.map(arg => arg[key])]
+		return [this.partial.save(key), ...this.args.map(arg => arg[key])]
 	}
 }
 

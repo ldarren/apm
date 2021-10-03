@@ -18,6 +18,7 @@
 	},
 	"routes": {
 		"/v1/signup": [
+            [["util.validate", "_.spec", "key"], "_.req", "_.output"],
 			["qiqi.log", "_.res", "_.output", "_.meta"]
 		],
 		"/v1/signin": [
