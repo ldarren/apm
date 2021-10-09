@@ -1,3 +1,21 @@
+const MAP_DOWN = {
+	ArrayExpression: 'elements',
+	ObjectExpression: 'properties',
+	FunctionExpression: 'body',
+	ArrowFunctionExpression: 'body',
+	ClassExpression: 'body',
+	ClassBody: 'body',
+	MethodDefinition: 'value',
+	MemberExpression: 'property',
+	CallExpression: 'callee',
+	NewExpression: 'callee',
+	ExpressionStatement: 'expression',
+	AssignmentExpression: 'right',
+	Property: 'value',
+	ReturnStatement: 'argument',
+	BlockStatement: 'body',
+}
+
 const MAP_CMP = {
 	exp(pt){
 		if ('ExpressionStatement' === pt.type) return pt.expression
@@ -42,17 +60,38 @@ const MAP_CMP = {
 	}
 }
 
-function find(steps, idx = 0){
-	if (steps.length <= idx || !this) return this
+function walk(pt, steps, idx = 0){
+	if (steps.length <= idx || !pt) return pt
 	const [type, cmp] = steps[idx]
 
-	const pts = Array.isArray(this) ? this: [this]
+	const pts = Array.isArray(pt) ? pt: [pt]
 	for (let i=0, pt, found; pt = pts[i]; i++){
-		found = find.call(MAP_CMP[type](pt, cmp), steps, idx+1)
+		found = walk(MAP_CMP[type](pt, cmp), steps, idx+1)
 		if (found) return found
 	}
 }
 
+function find(pt, pattern, paths = []){
+	const pts = Array.isArray(pt) ? pt : [pt]
+	const branches = []
+
+	for (let i = 0, p, d, path; (p = pts[i]); i++){
+		if (walk(p, pattern)){
+			branches.push(p)
+		} else {
+			d = MAP_DOWN[p.type]	
+			path = []
+			if (d && find(p[d], pattern, path)){
+				path.unshift(p)
+				branches.push(path)	
+			}
+		}
+	}
+	if (branches.length) paths.push(branches)
+	return branches.length
+}
+
 return {
+	walk,
 	find,
 }
