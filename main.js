@@ -10,7 +10,12 @@ async function onJSOpen(ev) {
 		console.log(`Name[${f.name}] len[${f.size}] type[${f.type}] lastModified[${(new Date(f.lastModified))}]`)
 		js = await f.text()
 		try {
-			builder.add(mods, f.name, acorn.parse(js, { ecmaVersion: 2021 }))
+			builder.add(mods, f.name, acorn.parse(js, {
+				locations: false,
+				directSourceFile: false,
+				ranges: false,
+				ecmaVersion: 2021
+			}))
 			console.log(mods)
 		} catch (ex) {
 			console.error(ex)

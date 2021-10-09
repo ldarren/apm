@@ -14,6 +14,7 @@ const MAP_DOWN = {
 	Property: 'value',
 	ReturnStatement: 'argument',
 	BlockStatement: 'body',
+	Program: 'body',
 }
 
 const MAP_CMP = {
@@ -87,7 +88,17 @@ function find(pt, pattern, paths = []){
 			}
 		}
 	}
-	if (branches.length) paths.push(branches)
+
+	switch(branches.length){
+	case 0: break
+	case 1:
+		if (Array.isArray(branches[0])) paths.push(...branches[0])
+		else paths.push(branches[0])
+		break
+	default:
+		paths.push(branches)
+		break
+	}
 	return branches.length
 }
 

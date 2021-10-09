@@ -1,35 +1,30 @@
 const AST = require('~/ast')
 
-const NEXT = [['member', ['this', 'next']]]
+const NEXT = [['call', [0]],['member', ['this', 'next']]]
+const FUNCS = ['FunctionExpressio', 'ArrowFunctionExpression']
+
+function findPartial(arr, i = 0){
+	if (arr.length <= i) return	
+	const pt = arr[i]
+	if ('ReturnStatement' !== pt.type) return findPartial(arr, i+1)
+	if (FUNCS.includes(arr[i+1].type)) return arr[i+1].params.map(p => p.name)
+	return findPartial(arr, i+1)
+}
+
 return {
 	add(mods, fname, ast){
 		const paths = []
 		const found = AST.find(ast, NEXT, paths)
-		console.log('*', found)
 		console.log('**', paths)
-	/*
-		const pts = AST.walk(ast.body, [
-			['exp'],
-			['=', ['module', 'exports']],
-			['obj'],
-		])
-*/
-		const mod = {}
-		/*
-		for(let i=0, pt, fbody, callee; pt = pts[i]; i++){
-			fbody = AST.walk(pt, [
-				['prop'],
-				['func'],
-			])
-			callee = AST.walk(fbody, [
-				['ret'],
-				['call', [0]],
-			])
-			if (AST.walk(callee, NEXT)){
-				mod[pt.key.name] = pt.value.params.map(p => p.name)
-			}
-		}
-		*/
+
+		const arrs = paths.find(p => Array.isArray(p))
+		const mod = arrs.reduce((acc, arr) => {
+			const name = arr[0].key.name
+			const params = arr[1].params.map(p => p.name)
+			const partial = findPartial(arr.slice(1))
+			acc[name] = partial ? [params, partial] : params
+			return acc
+		}, {})
 
 		const name = fname.split('.')[0]
 		Object.assign(mods, {[name]: mod})
