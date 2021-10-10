@@ -1,5 +1,31 @@
 const editor = require('~/editor')
+const AST = require('~/ast')
+const PREFIX = 'function f(){'
+const POSTFIX = '}'
 
+async function onJSOpen(ev) {
+	const fl = ev.target.files
+	const mod = {}
+
+	for (let i = 0, l = fl.length, f, js; i < l; i++){
+		f = fl.item(i)	
+		console.log(`Name[${f.name}] len[${f.size}] type[${f.type}] lastModified[${(new Date(f.lastModified))}]`)
+		js = await f.text()
+		if (-1 === js.indexOf('exports')) js = PREFIX + js + POSTFIX
+		try {
+			Object.assign(mod, AST.convert(f.name, acorn.parse(js, {
+				locations: false,
+				directSourceFile: false,
+				ranges: false,
+				ecmaVersion: 2021
+			})))
+		} catch (ex) {
+			console.error(ex)
+		}
+	}
+	editor.reload({mod})
+	return mod
+}
 async function onOpen(ev) {
 	let data
 	const fl = ev.target.files
@@ -10,7 +36,6 @@ async function onOpen(ev) {
 		json = await f.text()
 		try {
 			data = JSON.parse(json)
-			console.log(data)
 		} catch (ex) {
 			console.error(ex)
 		}
@@ -44,11 +69,13 @@ function download(data, filename, type) {
 }
 
 return function(container){
+	const jsOpen = document.getElementById('jsOpen')
 	const fileOpen = document.getElementById('fileOpen')
 	const fileSave = document.getElementById('fileSave')
 
 	editor.load(container, {})
 
+	jsOpen.addEventListener('change', onJSOpen)
 	fileOpen.addEventListener('change', onOpen)
 	fileSave.addEventListener('click', onSave)
 }

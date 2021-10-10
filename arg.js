@@ -28,8 +28,11 @@ function click(evt){
 function Arg(host, name, value, opt){
 	const o = Object.assign({}, DEF_OPT, opt)
 
+	const arr = name.split(',')
+
 	this.host = host
-	this.name = name
+	this.name = arr[0]
+	this.def = (arr.length > 1) ? JSON.parse(arr[1]) : void 0
 	this.value = value
 
 	const [type, tooltip, display] = this.type()
@@ -46,7 +49,7 @@ function Arg(host, name, value, opt){
 Arg.prototype = {
 	type(){
 		const v = this.value
-		if (undefined === v) return ['empty', this.name, this.name]
+		if (undefined === v) return ['empty', this.def ? `Default: ${this.def}` : this.name, this.name]
 		if (!v || !v.charAt) return ['const', JSON.stringify(v), 'C']
 		const arr = v.split('.')
 		if (1 === arr.length) return ['const', v, 'C']
