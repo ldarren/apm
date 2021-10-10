@@ -1,3 +1,6 @@
+const NEXT = [['call', [0]],['member', ['this', 'next']]]
+const FUNCS = ['FunctionExpression', 'ArrowFunctionExpression']
+
 const MAP_DOWN = {
 	ArrayExpression: 'elements',
 	ObjectExpression: 'properties',
@@ -17,6 +20,7 @@ const MAP_DOWN = {
 	Program: 'body',
 	IfStatement: 'consequent',
 	TryStatement: 'block',
+	FunctionDeclaration: 'body',
 }
 
 const MAP_CMP = {
@@ -104,7 +108,58 @@ function find(pt, pattern, paths = []){
 	return branches.length
 }
 
+function getArg(param){
+	switch(param.type){
+	case 'Literal':
+		return param.value
+	case 'Identifier':
+		return param.name
+	case 'RestElement':
+		return '...' + getArg(param.argument)
+	case 'AssignmentPattern':
+		return getArg(param.left) + ',' + JSON.stringify(getArg(param.right))
+	case 'ObjectExpression':
+		return {}
+	}
+}
+
+function findPartial(arr, i = 0){
+	if (arr.length <= i) return	
+	const pt = arr[i]
+	if ('ReturnStatement' !== pt.type) return findPartial(arr, i+1)
+	if (FUNCS.includes(arr[i+1].type)) return arr[i+1].params.map(getArg)
+	return findPartial(arr, i+1)
+}
+
+function findProperties(arr, i = 0){
+	if (arr.length <= i) return	
+	const pt = arr[i]
+	if ('ObjectExpression' !== pt.type) return findProperties(arr, i+1)
+	return i+1
+}
+
 return {
 	walk,
 	find,
+	convert(fname, ast){
+		const paths = []
+		const found = find(ast, NEXT, paths)
+		if (!found) {
+			console.error(`no module methods found in ${fname}`)
+			return {}
+		}
+
+		const idx = findProperties(paths)
+		const arrs = Array.isArray(paths[idx]) ? paths[idx] : [paths.slice(idx)]
+		const mod = arrs.reduce((acc, arr) => {
+			const name = arr[0].key.name
+			const params = arr[1].params.map(getArg)
+			const partial = findPartial(arr.slice(1))
+			acc[name] = partial ? [params, partial] : params
+			return acc
+		}, {})
+
+		const name = fname.split('.')[0]
+		return {[name]: mod}
+	}
 }

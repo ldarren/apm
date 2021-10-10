@@ -1,46 +1,30 @@
 const editor = require('~/editor')
-const builder = require('~/module_builder')
-const mods = {}
+const AST = require('~/ast')
+const PREFIX = 'function f(){'
+const POSTFIX = '}'
 
 async function onJSOpen(ev) {
 	const fl = ev.target.files
+	const mod = {}
 
 	for (let i = 0, l = fl.length, f, js; i < l; i++){
 		f = fl.item(i)	
 		console.log(`Name[${f.name}] len[${f.size}] type[${f.type}] lastModified[${(new Date(f.lastModified))}]`)
 		js = await f.text()
+		if (-1 === js.indexOf('exports')) js = PREFIX + js + POSTFIX
 		try {
-			builder.add(mods, f.name, acorn.parse(js, {
+			Object.assign(mod, AST.convert(f.name, acorn.parse(js, {
 				locations: false,
 				directSourceFile: false,
 				ranges: false,
 				ecmaVersion: 2021
-			}))
-			console.log(mods)
-			editor.reload({mod:mods})
+			})))
 		} catch (ex) {
 			console.error(ex)
 		}
 	}
-	return mods
-}
-async function onPicoOpen(ev) {
-	let data
-	const fl = ev.target.files
-
-	for (let i = 0, l = fl.length, f, json; i < l; i++){
-		f = fl.item(i)	
-		console.log(`Name[${f.name}] len[${f.size}] type[${f.type}] lastModified[${(new Date(f.lastModified))}]`)
-		json = await f.text()
-		try {
-			data = JSON.parse(json)
-			console.log(data)
-		} catch (ex) {
-			console.error(ex)
-		}
-	}
-	editor.reload(data)
-	return data
+	editor.reload({mod})
+	return mod
 }
 async function onOpen(ev) {
 	let data
@@ -52,7 +36,6 @@ async function onOpen(ev) {
 		json = await f.text()
 		try {
 			data = JSON.parse(json)
-			console.log(data)
 		} catch (ex) {
 			console.error(ex)
 		}
@@ -87,14 +70,12 @@ function download(data, filename, type) {
 
 return function(container){
 	const jsOpen = document.getElementById('jsOpen')
-	const picoOpen = document.getElementById('picoOpen')
 	const fileOpen = document.getElementById('fileOpen')
 	const fileSave = document.getElementById('fileSave')
 
 	editor.load(container, {})
 
 	jsOpen.addEventListener('change', onJSOpen)
-	picoOpen.addEventListener('change', onPicoOpen)
 	fileOpen.addEventListener('change', onOpen)
 	fileSave.addEventListener('click', onSave)
 }
