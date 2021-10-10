@@ -17,6 +17,7 @@ async function onJSOpen(ev) {
 				ecmaVersion: 2021
 			}))
 			console.log(mods)
+			editor.reload({mod:mods})
 		} catch (ex) {
 			console.error(ex)
 		}

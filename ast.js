@@ -7,14 +7,16 @@ const MAP_DOWN = {
 	ClassBody: 'body',
 	MethodDefinition: 'value',
 	MemberExpression: 'property',
-	CallExpression: 'callee',
-	NewExpression: 'callee',
+	CallExpression: 'arguments',
+	NewExpression: 'arguments',
 	ExpressionStatement: 'expression',
 	AssignmentExpression: 'right',
 	Property: 'value',
 	ReturnStatement: 'argument',
 	BlockStatement: 'body',
 	Program: 'body',
+	IfStatement: 'consequent',
+	TryStatement: 'block',
 }
 
 const MAP_CMP = {
