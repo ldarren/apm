@@ -1,5 +1,6 @@
 const NEXT = [['call', [0]],['member', ['this', 'next']]]
 const FUNCS = ['FunctionExpression', 'ArrowFunctionExpression']
+const RETURNS = ['ReturnStatement', 'ArrowFunctionExpression']
 
 const MAP_DOWN = {
 	ArrayExpression: 'elements',
@@ -126,7 +127,7 @@ function getArg(param){
 function findPartial(arr, i = 0){
 	if (arr.length <= i) return	
 	const pt = arr[i]
-	if ('ReturnStatement' !== pt.type) return findPartial(arr, i+1)
+	if (!RETURNS.includes(pt.type)) return findPartial(arr, i+1)
 	if (FUNCS.includes(arr[i+1].type)) return arr[i+1].params.map(getArg)
 	return findPartial(arr, i+1)
 }

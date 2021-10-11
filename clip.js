@@ -21,7 +21,8 @@ return {
 	},
 	src(value){
 		if (!dest) return
-		dest.addValue(value)
+		const d = dest
 		this.dest()
+		d.addValue(value)
 	}
 }

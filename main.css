@@ -36,6 +36,10 @@ svg.arg text, svg.val text{
 	fill:#999;
 	stroke:#000;
 }
+svg.arg.wiDef rect, svg.val.wiDef rect{
+	stroke:#080;
+	stroke-width: 3;
+}
 svg.arg rect, svg.val rect{
 	fill:#aaa;
 	stroke:#888;
