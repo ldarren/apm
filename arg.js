@@ -36,7 +36,7 @@ function Arg(host, name, value, opt){
 	this.value = value
 
 	const [type, tooltip, display] = this.type()
-	this.ele = Vec(host).draw('svg', o).addCl('fix', 'arg', type)
+	this.ele = Vec(host).draw('svg', o).addCl('fix', 'arg', type, this.def ? 'wiDef' : 'noDef')
 		.addEvt('mouseenter', enter, this)
 		.addEvt('mouseleave', leave, this)
 		.addEvt('mousedown', click, this).ele
@@ -47,9 +47,12 @@ function Arg(host, name, value, opt){
 }
 
 Arg.prototype = {
+	move(x, y){
+		Vec(this.ele).addAttr({x, y})
+	},
 	type(){
 		const v = this.value
-		if (undefined === v) return ['empty', this.def ? `Default: ${this.def}` : this.name, this.name]
+		if (undefined === v) return ['empty', this.def ? `${this.name}\nDefault: ${this.def}` : this.name, this.name]
 		if (!v || !v.charAt) return ['const', JSON.stringify(v), 'C']
 		const arr = v.split('.')
 		if (1 === arr.length) return ['const', v, 'C']
